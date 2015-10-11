@@ -57,6 +57,10 @@ public class GraveyardManager {
         // TODO save graveyard data to file
     }
 
+    public List<Graveyard> getGraveyardList(UUID worldUUID){
+        return graveyardMap.get(worldUUID);
+    }
+
     /**
      * Helper method to find the nearest graveyard. Uses brute-force
      * method for finding nearest neighbor.
