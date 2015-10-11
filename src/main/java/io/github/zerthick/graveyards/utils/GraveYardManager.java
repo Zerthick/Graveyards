@@ -23,10 +23,10 @@ import com.flowpowered.math.vector.Vector3i;
 
 import java.util.*;
 
-public class GraveYardManager {
+public class GraveyardManager {
     private Map<UUID, List<Graveyard>> graveyardMap;
 
-    public GraveYardManager() {
+    public GraveyardManager() {
         graveyardMap = new HashMap<>();
     }
 
