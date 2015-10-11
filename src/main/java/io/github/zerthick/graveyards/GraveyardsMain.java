@@ -20,29 +20,34 @@
 package io.github.zerthick.graveyards;
 
 import com.google.inject.Inject;
+import io.github.zerthick.graveyards.utils.GraveYardManager;
+import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.data.manipulator.mutable.entity.RespawnLocationData;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.DefaultConfig;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import java.io.File;
 import java.util.logging.Logger;
 
-/**
- * Created by Chase on 10/11/2015.
- */
 @Plugin(id = "Graveyards", name = "Graveyards", version = "0.1")
 public class GraveyardsMain {
+
+    private GraveYardManager graveYardManager;
 
     @Inject
     private Logger logger;
 
-    public Logger getLogger()
-    {
+    public Logger getLogger() {
         return logger;
     }
 
@@ -58,15 +63,40 @@ public class GraveyardsMain {
     private ConfigurationLoader<CommentedConfigurationNode> confManager;
 
     @Listener
-    public void onServerStart(GameStartedServerEvent event){
+    public void onServerStart(GameStartedServerEvent event) {
+
+        // Initialize Manager
+        graveYardManager = new GraveYardManager();
 
         // Register Commands
         GraveyardsCommandRegister commandRegister = new GraveyardsCommandRegister(
                 instance);
         commandRegister.registerCmds();
 
+        // Log Start Up to Console
         getLogger().info(
                 instance.getName() + " version " + instance.getVersion()
                         + " enabled!");
+    }
+
+    @Listener
+    public void onEnitityDeath(DestructEntityEvent.Death event) {
+        if (event.getTargetEntity() instanceof Player) {
+            Player player = (Player) event.getTargetEntity();
+            Graveyard nearestGraveyard = graveYardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
+            if (nearestGraveyard != null) {
+                setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
+            }
+        }
+    }
+
+    /**
+     * Private helper method to reset a player's respawn location
+     * @param player    the player to change respawn location of
+     * @param location  the location to set the player's respawn
+     */
+    private void setRespawnLocation(Player player, Location<World> location) {
+        RespawnLocationData data = player.getOrCreate(RespawnLocationData.class).get(); // It's a player, assume it can be created
+        data.respawnLocation().put(location.getExtent().getUniqueId(), location.getPosition());
     }
 }

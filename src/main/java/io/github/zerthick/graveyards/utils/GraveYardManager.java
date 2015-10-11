@@ -23,14 +23,11 @@ import com.flowpowered.math.vector.Vector3i;
 
 import java.util.*;
 
-/**
- * Created by Chase on 10/11/2015.
- */
 public class GraveYardManager {
     private Map<UUID, List<Graveyard>> graveyardMap;
 
-    public void init(){
-        // TODO grab graveyard data from file.
+    public GraveYardManager() {
+        graveyardMap = new HashMap<>();
     }
 
     public void addGraveyard(String name, Vector3i location, UUID worldUUID) {
@@ -72,7 +69,7 @@ public class GraveYardManager {
         List<Graveyard> graveyardList = graveyardMap.get(worldUUID);
         Graveyard nearestGraveyard = null;
         if (!graveyardList.isEmpty()) {
-            Graveyard currentGraveyard = null;
+            Graveyard currentGraveyard;
             Iterator<Graveyard> it = graveyardList.iterator();
             nearestGraveyard = it.next();
             while (it.hasNext()) {
