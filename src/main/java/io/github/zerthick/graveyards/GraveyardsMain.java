@@ -20,7 +20,7 @@
 package io.github.zerthick.graveyards;
 
 import com.google.inject.Inject;
-import io.github.zerthick.graveyards.utils.GraveYardManager;
+import io.github.zerthick.graveyards.utils.GraveyardManager;
 import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -42,7 +42,11 @@ import java.util.logging.Logger;
 @Plugin(id = "Graveyards", name = "Graveyards", version = "0.1")
 public class GraveyardsMain {
 
-    private GraveYardManager graveYardManager;
+    private GraveyardManager graveyardManager;
+
+    public GraveyardManager getGraveyardManager(){
+        return graveyardManager;
+    }
 
     @Inject
     private Logger logger;
@@ -66,7 +70,7 @@ public class GraveyardsMain {
     public void onServerStart(GameStartedServerEvent event) {
 
         // Initialize Manager
-        graveYardManager = new GraveYardManager();
+        graveyardManager = new GraveyardManager();
 
         // Register Commands
         GraveyardsCommandRegister commandRegister = new GraveyardsCommandRegister(
@@ -83,7 +87,7 @@ public class GraveyardsMain {
     public void onEnitityDeath(DestructEntityEvent.Death event) {
         if (event.getTargetEntity() instanceof Player) {
             Player player = (Player) event.getTargetEntity();
-            Graveyard nearestGraveyard = graveYardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
+            Graveyard nearestGraveyard = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyard != null) {
                 setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
             }
