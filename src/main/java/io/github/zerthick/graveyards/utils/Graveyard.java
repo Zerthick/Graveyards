@@ -21,9 +21,6 @@ package io.github.zerthick.graveyards.utils;
 
 import com.flowpowered.math.vector.Vector3i;
 
-/**
- * Created by Chase on 10/11/2015.
- */
 public class Graveyard {
     private final String name;
     private final Vector3i location;

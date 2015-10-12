@@ -25,6 +25,7 @@ import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.data.manipulator.mutable.entity.RespawnLocationData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -46,6 +47,13 @@ public class GraveyardsMain {
 
     public GraveyardManager getGraveyardManager(){
         return graveyardManager;
+    }
+
+    @Inject
+    private Game game;
+
+    public Game getGame() {
+        return game;
     }
 
     @Inject
