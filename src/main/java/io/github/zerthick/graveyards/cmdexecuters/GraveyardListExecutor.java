@@ -62,7 +62,7 @@ public class GraveyardListExecutor implements CommandExecutor {
 
         if (world.isPresent()) {
             List<Graveyard> graveyardList = manager.getGraveyardList(world.get().getUniqueId());
-            if (graveyardList != null) {
+            if (!graveyardList.isEmpty()) {
                 listBuilder(world.get(), graveyardList, plugin).sendTo(src);
             } else {
                 src.sendMessage(Texts.of(TextColors.GREEN,
@@ -74,7 +74,7 @@ public class GraveyardListExecutor implements CommandExecutor {
         if (src instanceof Player) {
             Player player = (Player) src;
             List<Graveyard> graveyardList = manager.getGraveyardList(player.getWorld().getUniqueId());
-            if (graveyardList != null) {
+            if (!graveyardList.isEmpty()) {
                 listBuilder(player.getWorld().getProperties(), graveyardList, plugin).sendTo(src);
             } else {
                 src.sendMessage(Texts.of(TextColors.GREEN,

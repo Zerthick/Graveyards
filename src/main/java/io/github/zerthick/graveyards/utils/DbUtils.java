@@ -46,9 +46,9 @@ public class DbUtils {
 
                 sql = "CREATE TABLE GRAVEYARDS" +
                         "(NAME TEXT PRIMARY KEY     NOT NULL," +
-                        "WORLDID            INT     NOT NULL" +
-                        "X                  INT     NOT NULL" +
-                        "Y                  INT     NOT NULL" +
+                        "WORLDID            INT     NOT NULL," +
+                        "X                  INT     NOT NULL," +
+                        "Y                  INT     NOT NULL," +
                         "Z                  INT     NOT NULL)";
                 stmt.executeUpdate(sql);
 
@@ -88,8 +88,7 @@ public class DbUtils {
             c = DriverManager.getConnection("jdbc:sqlite:Graveyards.db");
             c.setAutoCommit(false);
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES " +
-                    "WHERE TABLE_NAME = N'GRAVEYARDS');");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE name='GRAVEYARDS';");
 
             // Iterate through db and add each graveyard to the map
             while (rs.next()) {

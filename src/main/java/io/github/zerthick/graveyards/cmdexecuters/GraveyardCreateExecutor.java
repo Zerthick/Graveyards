@@ -88,6 +88,6 @@ public class GraveyardCreateExecutor implements CommandExecutor {
         return Texts.of(TextColors.GREEN, "Created Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
-                " at Location ", TextColors.DARK_GREEN, location.toString());
+                " at Location ", TextColors.DARK_GREEN, location.toInt().toString());
     }
 }
