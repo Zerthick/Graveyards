@@ -53,7 +53,7 @@ public class GraveyardManager {
         } else {
             graveyardMap.remove(worldUUID);
         }
-        
+
         return true;
     }
 

@@ -66,14 +66,6 @@ public class GraveyardsMain {
     @Inject
     private PluginContainer instance;
 
-    @Inject
-    @DefaultConfig(sharedRoot = true)
-    private File dConfig;
-
-    @Inject
-    @DefaultConfig(sharedRoot = true)
-    private ConfigurationLoader<CommentedConfigurationNode> confManager;
-
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
 
