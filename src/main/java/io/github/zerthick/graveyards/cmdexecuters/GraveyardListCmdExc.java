@@ -21,7 +21,7 @@ package io.github.zerthick.graveyards.cmdexecuters;
 
 import io.github.zerthick.graveyards.GraveyardsMain;
 import io.github.zerthick.graveyards.utils.Graveyard;
-import io.github.zerthick.graveyards.utils.GraveyardManager;
+import io.github.zerthick.graveyards.utils.GraveyardManager2;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.pagination.PaginationBuilder;
@@ -56,7 +56,7 @@ public class GraveyardListCmdExc implements CommandExecutor {
 
         GraveyardsMain plugin = (GraveyardsMain) (container.getInstance() instanceof GraveyardsMain ? container
                 .getInstance() : null);
-        GraveyardManager manager = plugin.getGraveyardManager();
+        GraveyardManager2 manager = plugin.getGraveyardManager();
 
         Optional<WorldProperties> world = args.getOne("World");
 
