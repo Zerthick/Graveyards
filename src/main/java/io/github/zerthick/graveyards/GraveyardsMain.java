@@ -20,24 +20,22 @@
 package io.github.zerthick.graveyards;
 
 import com.google.inject.Inject;
+import io.github.zerthick.graveyards.utils.DbUtils2;
 import io.github.zerthick.graveyards.utils.GraveyardManager;
 import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.data.manipulator.mutable.entity.RespawnLocationData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 @Plugin(id = "Graveyards", name = "Graveyards", version = "0.1")
@@ -69,8 +67,8 @@ public class GraveyardsMain {
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
 
-        // Initialize Manager
-        graveyardManager = new GraveyardManager();
+        // Initialize Manager with Graveyards from db
+        graveyardManager = new GraveyardManager(DbUtils2.readGraveyards());
 
         // Register Commands
         GraveyardsCommandRegister commandRegister = new GraveyardsCommandRegister(
@@ -92,6 +90,13 @@ public class GraveyardsMain {
                 setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
             }
         }
+    }
+
+    @Listener
+    public void onServerStop(GameStoppedServerEvent event){
+
+        // Save Graveyards to db
+        DbUtils2.writeGraveyards(graveyardManager.getGraveyardMap());
     }
 
     /**

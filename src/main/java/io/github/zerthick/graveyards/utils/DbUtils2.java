@@ -27,7 +27,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
-public class dbUtils {
+public class DbUtils2 {
 
     public static void writeGraveyards(Map<UUID, Set<Graveyard>> graveyardMap) {
         Connection c;
@@ -56,9 +56,7 @@ public class dbUtils {
                 for (UUID worldUUID : graveyardMap.keySet()) {
                     Set<Graveyard> graveyardSet = graveyardMap.get(worldUUID);
 
-                    Iterator<Graveyard> it = graveyardSet.iterator();
-                    while (it.hasNext()) {
-                        Graveyard graveyard = it.next();
+                    for (Graveyard graveyard : graveyardSet) {
                         String graveyardName = graveyard.getName();
                         Vector3i graveyardLoc = graveyard.getLocation();
 
