@@ -20,7 +20,7 @@
 package io.github.zerthick.graveyards;
 
 import com.google.inject.Inject;
-import io.github.zerthick.graveyards.utils.DbUtils2;
+import io.github.zerthick.graveyards.utils.DbUtils;
 import io.github.zerthick.graveyards.utils.GraveyardManager;
 import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
@@ -68,7 +68,7 @@ public class GraveyardsMain {
     public void onServerStart(GameStartedServerEvent event) {
 
         // Initialize Manager with Graveyards from db
-        graveyardManager = new GraveyardManager(DbUtils2.readGraveyards());
+        graveyardManager = new GraveyardManager(DbUtils.readGraveyards());
 
         // Register Commands
         GraveyardsCommandRegister commandRegister = new GraveyardsCommandRegister(
@@ -96,7 +96,7 @@ public class GraveyardsMain {
     public void onServerStop(GameStoppedServerEvent event){
 
         // Save Graveyards to db
-        DbUtils2.writeGraveyards(graveyardManager.getGraveyardMap());
+        DbUtils.writeGraveyards(graveyardManager.getGraveyardMap());
     }
 
     /**

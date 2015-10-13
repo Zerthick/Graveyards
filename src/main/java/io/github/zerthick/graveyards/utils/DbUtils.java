@@ -27,7 +27,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
-public class DbUtils2 {
+public class DbUtils {
 
     public static void writeGraveyards(Map<UUID, Set<Graveyard>> graveyardMap) {
         Connection c;
