@@ -44,11 +44,11 @@ public class GraveyardsCommandRegister {
     }
 
     public void registerCmds() {
-        // gy create <Name> <World> <x, y, z>
+        // gy create <Name> [World] [x, y, z]
         CommandSpec graveyardCreateCommand = CommandSpec
                 .builder()
                 .description(
-                        Texts.of("Creates a graveyard at the provided location or your current location if none is provided"))
+                        Texts.of("Creates a graveyard with the given name at the provided world and location or your current world and location if neither is provided."))
                 .permission("graveyards.command.create")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Texts
@@ -58,11 +58,11 @@ public class GraveyardsCommandRegister {
                         GenericArguments.optional(GenericArguments
                                 .vector3d(Texts.of("Location"))))
                 .executor(new GraveyardCreateCmdExc(container)).build();
-        // gy destroy <Name> <World>
+        // gy destroy <Name> [World]
         CommandSpec graveyardDestroyCommand = CommandSpec
                 .builder()
                 .description(
-                        Texts.of("Destorys a graveyard with the given name"))
+                        Texts.of("Destroys a graveyard with the given name in the provided world or your current world if none is provided."))
                 .permission("graveyards.command.destroy")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Texts
@@ -70,11 +70,11 @@ public class GraveyardsCommandRegister {
                         GenericArguments.optional(GenericArguments.world(
                                 Texts.of("World"), game)))
                 .executor(new GraveyardDestroyCmdExc(container)).build();
-        // gy list <World>
+        // gy list [World]
         CommandSpec graveyardListCommand = CommandSpec
                 .builder()
                 .description(
-                        Texts.of("Lists all graveyards in the provided world or your current world if none is provided"))
+                        Texts.of("Lists all graveyards in the provided world or your current world if none is provided."))
                 .permission("graveyards.command.list")
                 .arguments(
                         GenericArguments.optional(GenericArguments
