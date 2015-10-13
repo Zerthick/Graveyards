@@ -88,7 +88,8 @@ public class DbUtils {
             c = DriverManager.getConnection("jdbc:sqlite:Graveyards.db");
             c.setAutoCommit(false);
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("IF EXISTS (SELECT * FROM GRAVEYARDS);");
+            ResultSet rs = stmt.executeQuery("IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES " +
+                    "WHERE TABLE_NAME = N'GRAVEYARDS');");
 
             // Iterate through db and add each graveyard to the map
             while (rs.next()) {
