@@ -20,7 +20,7 @@
 package io.github.zerthick.graveyards;
 
 import com.google.inject.Inject;
-import io.github.zerthick.graveyards.utils.GraveyardManager2;
+import io.github.zerthick.graveyards.utils.GraveyardManager;
 import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -43,9 +43,9 @@ import java.util.logging.Logger;
 @Plugin(id = "Graveyards", name = "Graveyards", version = "0.1")
 public class GraveyardsMain {
 
-    private GraveyardManager2 graveyardManager;
+    private GraveyardManager graveyardManager;
 
-    public GraveyardManager2 getGraveyardManager(){
+    public GraveyardManager getGraveyardManager(){
         return graveyardManager;
     }
 
@@ -78,7 +78,7 @@ public class GraveyardsMain {
     public void onServerStart(GameStartedServerEvent event) {
 
         // Initialize Manager
-        graveyardManager = new GraveyardManager2();
+        graveyardManager = new GraveyardManager();
 
         // Register Commands
         GraveyardsCommandRegister commandRegister = new GraveyardsCommandRegister(

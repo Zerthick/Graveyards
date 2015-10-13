@@ -20,7 +20,7 @@
 package io.github.zerthick.graveyards.cmdexecuters;
 
 import io.github.zerthick.graveyards.GraveyardsMain;
-import io.github.zerthick.graveyards.utils.GraveyardManager2;
+import io.github.zerthick.graveyards.utils.GraveyardManager;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
@@ -50,7 +50,7 @@ public class GraveyardDestroyCmdExc implements CommandExecutor {
 
         GraveyardsMain plugin = (GraveyardsMain) (container.getInstance() instanceof GraveyardsMain ? container
                 .getInstance() : null);
-        GraveyardManager2 manager = plugin.getGraveyardManager();
+        GraveyardManager manager = plugin.getGraveyardManager();
 
         Optional<String> name = args.getOne("Name");
         Optional<WorldProperties> world = args.getOne("World");
