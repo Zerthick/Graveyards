@@ -50,19 +50,22 @@ public class GraveyardManager {
     }
 
     public boolean removeGraveyard(String name, UUID worldUUID) {
-        Graveyard graveyardToRemove = new Graveyard(name, new Vector3i());
         Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
                 new HashSet<>());
 
-        if(!graveyardSet.remove(graveyardToRemove)){return false;}
+        for(Graveyard graveyard : graveyardSet){
+            if(graveyard.getName().equalsIgnoreCase(name)){
+                graveyardSet.remove(graveyard);
 
-        if (!graveyardSet.isEmpty()) {
-            graveyardMap.put(worldUUID, graveyardSet);
-        } else {
-            graveyardMap.remove(worldUUID);
+                if (!graveyardSet.isEmpty()) {
+                    graveyardMap.put(worldUUID, graveyardSet);
+                } else {
+                    graveyardMap.remove(worldUUID);
+                }
+                return true;
+            }
         }
-
-        return true;
+        return false;
     }
 
     public List<Graveyard> getGraveyardList(UUID worldUUID){
