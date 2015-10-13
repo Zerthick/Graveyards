@@ -38,7 +38,6 @@ public class GraveyardManager {
         if(!graveyardSet.add(newGraveyard)){return false;}
         graveyardMap.put(worldUUID, graveyardSet);
 
-        // TODO save graveyard data to file.
         return true;
     }
 
@@ -54,8 +53,7 @@ public class GraveyardManager {
         } else {
             graveyardMap.remove(worldUUID);
         }
-
-        // TODO save graveyard data to file
+        
         return true;
     }
 
