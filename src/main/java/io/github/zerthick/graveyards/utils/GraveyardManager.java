@@ -71,7 +71,9 @@ public class GraveyardManager {
     public List<Graveyard> getGraveyardList(UUID worldUUID){
         Set<Graveyard> graveyardSet = graveyardMap.get(worldUUID);
         List<Graveyard> graveyardList = new ArrayList<>();
-        graveyardList.addAll(graveyardSet);
+        if(graveyardSet != null) {
+            graveyardList.addAll(graveyardSet);
+        }
         return graveyardList;
     }
 

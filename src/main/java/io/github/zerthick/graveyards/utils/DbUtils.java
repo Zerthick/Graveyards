@@ -70,6 +70,7 @@ public class DbUtils {
                 stmt.close();
                 c.close();
             } catch (Exception ignore) {
+                ignore.printStackTrace();
             }
         }
     }
@@ -103,6 +104,7 @@ public class DbUtils {
             stmt.close();
             c.close();
         } catch (Exception ignore) {
+            ignore.printStackTrace();
         }
         return graveyardMap;
     }
