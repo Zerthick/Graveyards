@@ -30,6 +30,14 @@ public class GraveyardManager {
         graveyardMap = new HashMap<>();
     }
 
+    public GraveyardManager(Map<UUID, Set<Graveyard>> graveyardMap){
+        this.graveyardMap = graveyardMap;
+    }
+
+    public Map<UUID, Set<Graveyard>> getGraveyardMap(){
+        return graveyardMap;
+    }
+
     public boolean addGraveyard(String name, Vector3i location, UUID worldUUID) {
         Graveyard newGraveyard = new Graveyard(name, location);
         Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
