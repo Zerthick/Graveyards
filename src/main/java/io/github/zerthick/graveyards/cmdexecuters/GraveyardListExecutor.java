@@ -40,12 +40,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class GraveyardListCmdExc implements CommandExecutor {
+public class GraveyardListExecutor implements CommandExecutor {
 
     private PluginContainer container;
 
 
-    public GraveyardListCmdExc(PluginContainer pluginContainer) {
+    public GraveyardListExecutor(PluginContainer pluginContainer) {
         super();
         this.container = pluginContainer;
     }

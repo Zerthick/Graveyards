@@ -28,11 +28,11 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
-public class GraveyardCmdExc implements CommandExecutor{
+public class GraveyardExecutor implements CommandExecutor{
 
     private PluginContainer container;
 
-    public GraveyardCmdExc(PluginContainer pluginContainer) {
+    public GraveyardExecutor(PluginContainer pluginContainer) {
         super();
         container = pluginContainer;
     }

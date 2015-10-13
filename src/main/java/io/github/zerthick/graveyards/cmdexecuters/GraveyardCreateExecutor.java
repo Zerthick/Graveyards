@@ -19,6 +19,7 @@
 
 package io.github.zerthick.graveyards.cmdexecuters;
 
+import com.flowpowered.math.vector.Vector3d;
 import io.github.zerthick.graveyards.GraveyardsMain;
 import io.github.zerthick.graveyards.utils.GraveyardManager;
 import org.spongepowered.api.entity.living.player.Player;
@@ -35,11 +36,11 @@ import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.util.Optional;
 
-public class GraveyardDestroyCmdExc implements CommandExecutor {
+public class GraveyardCreateExecutor implements CommandExecutor {
 
     private PluginContainer container;
 
-    public GraveyardDestroyCmdExc(PluginContainer pluginContainer) {
+    public GraveyardCreateExecutor(PluginContainer pluginContainer) {
         super();
         this.container = pluginContainer;
     }
@@ -54,34 +55,39 @@ public class GraveyardDestroyCmdExc implements CommandExecutor {
 
         Optional<String> name = args.getOne("Name");
         Optional<WorldProperties> world = args.getOne("World");
+        Optional<Vector3d> location = args.getOne("Location");
 
         if (name.isPresent()) {
-            if (world.isPresent()) {
+            if (location.isPresent() && world.isPresent()) {
 
-                manager.removeGraveyard(name.get(), world.get().getUniqueId());
-                src.sendMessage(successMessageBuilder(name.get(), world.get()));
+                manager.addGraveyard(name.get(), location.get().toInt(), world.get().getUniqueId());
+                src.sendMessage(successMessageBuilder(name.get(), world.get(), location.get()));
 
                 return CommandResult.success();
             }
             if (src instanceof Player) {
                 Player player = (Player) src;
 
-                manager.removeGraveyard(name.get(), player.getWorld().getUniqueId());
-                src.sendMessage(successMessageBuilder(name.get(), player.getWorld().getProperties()));
+                manager.addGraveyard(name.get(), player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
+                src.sendMessage(successMessageBuilder(name.get(), player.getWorld().getProperties(), player.getLocation().getPosition()));
 
                 return CommandResult.success();
             }
         }
-        src.sendMessage(Texts.of(TextColors.GREEN,
-                "You must specify a Name and World for the graveyard!"));
+
+        src.sendMessage(Texts
+                .of(TextColors.GREEN,
+                        "You must specify a Name, World, and Location for the graveyard!"));
 
         return CommandResult.empty();
     }
 
-    private Text successMessageBuilder(String name, WorldProperties world) {
+    private Text successMessageBuilder(String name, WorldProperties world,
+                                       Vector3d location) {
 
-        return Texts.of(TextColors.GREEN, "Destroyed Graveyard ",
+        return Texts.of(TextColors.GREEN, "Created Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
-                TextColors.DARK_GREEN, world.getWorldName());
+                TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
+                " at Location ", TextColors.DARK_GREEN, location.toString());
     }
 }

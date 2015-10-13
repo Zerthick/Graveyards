@@ -20,10 +20,10 @@
 package io.github.zerthick.graveyards.utils;
 
 import io.github.zerthick.graveyards.GraveyardsMain;
-import io.github.zerthick.graveyards.cmdexecuters.GraveyardCmdExc;
-import io.github.zerthick.graveyards.cmdexecuters.GraveyardCreateCmdExc;
-import io.github.zerthick.graveyards.cmdexecuters.GraveyardDestroyCmdExc;
-import io.github.zerthick.graveyards.cmdexecuters.GraveyardListCmdExc;
+import io.github.zerthick.graveyards.cmdexecuters.GraveyardExecutor;
+import io.github.zerthick.graveyards.cmdexecuters.GraveyardCreateExecutor;
+import io.github.zerthick.graveyards.cmdexecuters.GraveyardDestroyExecutor;
+import io.github.zerthick.graveyards.cmdexecuters.GraveyardListExecutor;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Texts;
@@ -57,7 +57,7 @@ public class GraveyardsCommandRegister {
                                 Texts.of("World"), game)),
                         GenericArguments.optional(GenericArguments
                                 .vector3d(Texts.of("Location"))))
-                .executor(new GraveyardCreateCmdExc(container)).build();
+                .executor(new GraveyardCreateExecutor(container)).build();
         // gy destroy <Name> [World]
         CommandSpec graveyardDestroyCommand = CommandSpec
                 .builder()
@@ -69,7 +69,7 @@ public class GraveyardsCommandRegister {
                                 .of("Name"))),
                         GenericArguments.optional(GenericArguments.world(
                                 Texts.of("World"), game)))
-                .executor(new GraveyardDestroyCmdExc(container)).build();
+                .executor(new GraveyardDestroyExecutor(container)).build();
         // gy list [World]
         CommandSpec graveyardListCommand = CommandSpec
                 .builder()
@@ -80,12 +80,12 @@ public class GraveyardsCommandRegister {
                         GenericArguments.optional(GenericArguments
                                 .onlyOne(GenericArguments.world(
                                         Texts.of("World"), game))))
-                .executor(new GraveyardListCmdExc(container)).build();
+                .executor(new GraveyardListExecutor(container)).build();
         // gy
         CommandSpec graveyardCommand = CommandSpec.builder()
                 .description(Texts.of("/gy [list|create|destroy]"))
                 .permission("graveyards.command")
-                .executor(new GraveyardCmdExc(container))
+                .executor(new GraveyardExecutor(container))
                 .child(graveyardCreateCommand, "create", "add")
                 .child(graveyardDestroyCommand, "destroy", "remove")
                 .child(graveyardListCommand, "list").build();
