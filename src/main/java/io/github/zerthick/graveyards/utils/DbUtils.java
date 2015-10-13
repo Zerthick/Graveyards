@@ -46,7 +46,7 @@ public class DbUtils {
 
                 sql = "CREATE TABLE GRAVEYARDS" +
                         "(NAME TEXT PRIMARY KEY     NOT NULL," +
-                        "WORLDID            INT     NOT NULL," +
+                        "WORLDID            TEXT     NOT NULL," +
                         "X                  INT     NOT NULL," +
                         "Y                  INT     NOT NULL," +
                         "Z                  INT     NOT NULL)";
