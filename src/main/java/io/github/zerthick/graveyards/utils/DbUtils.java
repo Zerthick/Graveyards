@@ -60,8 +60,8 @@ public class DbUtils {
                         String graveyardName = graveyard.getName();
                         Vector3i graveyardLoc = graveyard.getLocation();
 
-                        sql = "INSERT INTO GRAVEYARDS (NAME, WORLDID, X, Y, Z)" +
-                                "VALUES (" + graveyardName + ',' + worldUUID + ','
+                        sql = "INSERT INTO GRAVEYARDS (NAME,WORLDID,X,Y,Z) " +
+                                "VALUES ('" + graveyardName + "','" + worldUUID.toString() + "',"
                                 + graveyardLoc.getX() + ',' + graveyardLoc.getY() + ',' + graveyardLoc.getZ() + ");";
                         stmt.executeUpdate(sql);
                     }
@@ -88,13 +88,14 @@ public class DbUtils {
             c = DriverManager.getConnection("jdbc:sqlite:Graveyards.db");
             c.setAutoCommit(false);
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM sqlite_master WHERE name='GRAVEYARDS';");
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM GRAVEYARDS;");
 
             // Iterate through db and add each graveyard to the map
             while (rs.next()) {
-                String graveyardName = rs.getString("name");
-                UUID worldUUID = UUID.fromString(rs.getString("worldid"));
-                Vector3i graveyardLocation = new Vector3i(rs.getInt("x"), rs.getInt("y"), rs.getInt("z"));
+                String graveyardName = rs.getString("NAME");
+                UUID worldUUID = UUID.fromString(rs.getString("WORLDID"));
+                Vector3i graveyardLocation = new Vector3i(rs.getInt("X"), rs.getInt("Y"), rs.getInt("Z"));
 
                 Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID, new HashSet<>());
                 graveyardSet.add(new Graveyard(graveyardName, graveyardLocation));
@@ -104,7 +105,6 @@ public class DbUtils {
             stmt.close();
             c.close();
         } catch (Exception ignore) {
-            ignore.printStackTrace();
         }
         return graveyardMap;
     }
