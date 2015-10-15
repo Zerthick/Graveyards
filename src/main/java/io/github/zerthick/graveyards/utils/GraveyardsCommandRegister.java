@@ -84,7 +84,7 @@ public class GraveyardsCommandRegister {
         // gy
         CommandSpec graveyardCommand = CommandSpec.builder()
                 .description(Texts.of("/gy [list|create|destroy]"))
-                .permission("graveyards.command")
+                .permission("graveyards.command.help")
                 .executor(new GraveyardExecutor(container))
                 .child(graveyardCreateCommand, "create", "add")
                 .child(graveyardDestroyCommand, "destroy", "remove")

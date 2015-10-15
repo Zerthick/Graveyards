@@ -15,7 +15,7 @@ You can check out the Graveyards Sponge Forum Post [here](https://forums.spongep
 
 ##Permissions
 ```
-graveyards.command
+graveyards.command.help
 graveyards.command.create
 graveyards.command.destroy
 graveyards.command.list
