@@ -20,6 +20,7 @@
 package io.github.zerthick.graveyards.utils;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.sun.org.apache.bcel.internal.generic.TABLESWITCH;
 
 import java.sql.*;
 import java.util.*;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class DbUtils {
 
     public static void writeGraveyards(Map<UUID, Set<Graveyard>> graveyardMap) {
+
         Connection c;
         Statement stmt;
 
@@ -67,7 +69,6 @@ public class DbUtils {
                 stmt.close();
                 c.close();
             } catch (Exception ignore) {
-                ignore.printStackTrace();
             }
         }
     }
@@ -78,7 +79,6 @@ public class DbUtils {
 
         Connection c;
         Statement stmt;
-        DatabaseMetaData md;
 
         try {
             // Create sqlite connection
@@ -88,10 +88,9 @@ public class DbUtils {
             stmt = c.createStatement();
 
             // Get list of tables in db
-            ResultSet tableNames = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
+            ResultSet tableNames = c.getMetaData().getTables(null, null, null, new String[] {"TABLE"});
             while (tableNames.next()) {
-                String tableName = tableNames.getString("name");
-                System.out.println(tableName);
+                String tableName = tableNames.getString("TABLE_NAME");
                 ResultSet graveyardRecords = stmt.executeQuery("SELECT * FROM '" + tableName + "';");
 
                 // Iterate through table and add each graveyard to the map
@@ -108,7 +107,6 @@ public class DbUtils {
             stmt.close();
             c.close();
         } catch (Exception ignore) {
-            ignore.printStackTrace();
         }
         return graveyardMap;
     }
@@ -118,14 +116,14 @@ public class DbUtils {
         Statement stmt = c.createStatement();
 
         Set<UUID> worldUUIDs = graveyardMap.keySet();
-        ResultSet tableNames = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
+        ResultSet tableNames = c.getMetaData().getTables(null, null, null, new String[]{"TABLE"});
+        Set<String> tablesToDrop = new HashSet<>();
         while(tableNames.next()){
-            String tableName = tableNames.getString("name");
+            String tableName = tableNames.getString("TABLE_NAME");
             UUID worldUUID = UUID.fromString(tableName);
-
-            if(!worldUUIDs.contains(worldUUID)){ //Remove Old Worlds
-                stmt.executeUpdate("DROP TABLE '" + tableName + "'");
-            } else { //Clean Table for old Graveyards
+            if(!worldUUIDs.contains(worldUUID)){ //Mark world to be destroyed
+                tablesToDrop.add(tableName);
+            } else { //Clean table for old Graveyards
                 Set<String> graveyardNames = graveyardMap.get(worldUUID).stream().map(Graveyard::getName).collect(Collectors.toSet());
                 ResultSet graveyardRecords = stmt.executeQuery("SELECT * FROM '" + tableName + "';");
                 while (graveyardRecords.next()){
@@ -135,6 +133,10 @@ public class DbUtils {
                     }
                 }
             }
+        }
+        // Clean old tables
+        for(String table : tablesToDrop){
+            stmt.executeUpdate("DROP TABLE '" + table +"';");
         }
         stmt.close();
     }
