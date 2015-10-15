@@ -22,6 +22,7 @@ package io.github.zerthick.graveyards.utils;
 import com.flowpowered.math.vector.Vector3i;
 
 public class Graveyard {
+
     private final String name;
     private final Vector3i location;
 
@@ -38,6 +39,4 @@ public class Graveyard {
     public Vector3i getLocation() {
         return location;
     }
-
-
 }

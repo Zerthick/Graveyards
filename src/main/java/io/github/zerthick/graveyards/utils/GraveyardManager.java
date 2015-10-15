@@ -24,17 +24,14 @@ import com.flowpowered.math.vector.Vector3i;
 import java.util.*;
 
 public class GraveyardManager {
+
     private Map<UUID, Set<Graveyard>> graveyardMap;
 
-    public GraveyardManager() {
-        graveyardMap = new HashMap<>();
-    }
-
-    public GraveyardManager(Map<UUID, Set<Graveyard>> graveyardMap){
+    public GraveyardManager(Map<UUID, Set<Graveyard>> graveyardMap) {
         this.graveyardMap = graveyardMap;
     }
 
-    public Map<UUID, Set<Graveyard>> getGraveyardMap(){
+    public Map<UUID, Set<Graveyard>> getGraveyardMap() {
         return graveyardMap;
     }
 
@@ -43,7 +40,9 @@ public class GraveyardManager {
         Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
                 new HashSet<>());
 
-        if(!graveyardSet.add(newGraveyard)){return false;}
+        if (!graveyardSet.add(newGraveyard)) {
+            return false;
+        }
         graveyardMap.put(worldUUID, graveyardSet);
 
         return true;
@@ -53,8 +52,8 @@ public class GraveyardManager {
         Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
                 new HashSet<>());
 
-        for(Graveyard graveyard : graveyardSet){
-            if(graveyard.getName().equalsIgnoreCase(name)){
+        for (Graveyard graveyard : graveyardSet) {
+            if (graveyard.getName().equalsIgnoreCase(name)) {
                 graveyardSet.remove(graveyard);
 
                 if (!graveyardSet.isEmpty()) {
@@ -68,10 +67,10 @@ public class GraveyardManager {
         return false;
     }
 
-    public List<Graveyard> getGraveyardList(UUID worldUUID){
+    public List<Graveyard> getGraveyardList(UUID worldUUID) {
         Set<Graveyard> graveyardSet = graveyardMap.get(worldUUID);
         List<Graveyard> graveyardList = new ArrayList<>();
-        if(graveyardSet != null) {
+        if (graveyardSet != null) {
             graveyardList.addAll(graveyardSet);
         }
         return graveyardList;

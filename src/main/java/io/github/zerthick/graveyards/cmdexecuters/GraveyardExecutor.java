@@ -28,7 +28,7 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
-public class GraveyardExecutor implements CommandExecutor{
+public class GraveyardExecutor implements CommandExecutor {
 
     private PluginContainer container;
 

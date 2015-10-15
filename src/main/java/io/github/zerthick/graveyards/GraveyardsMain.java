@@ -21,8 +21,8 @@ package io.github.zerthick.graveyards;
 
 import com.google.inject.Inject;
 import io.github.zerthick.graveyards.utils.DbUtils;
-import io.github.zerthick.graveyards.utils.GraveyardManager;
 import io.github.zerthick.graveyards.utils.Graveyard;
+import io.github.zerthick.graveyards.utils.GraveyardManager;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.data.manipulator.mutable.entity.RespawnLocationData;
@@ -43,7 +43,7 @@ public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
 
-    public GraveyardManager getGraveyardManager(){
+    public GraveyardManager getGraveyardManager() {
         return graveyardManager;
     }
 
@@ -93,7 +93,7 @@ public class GraveyardsMain {
     }
 
     @Listener
-    public void onServerStop(GameStoppedServerEvent event){
+    public void onServerStop(GameStoppedServerEvent event) {
 
         // Save Graveyards to db
         DbUtils.writeGraveyards(graveyardManager.getGraveyardMap());
@@ -101,8 +101,9 @@ public class GraveyardsMain {
 
     /**
      * Private helper method to reset a player's respawn location
-     * @param player    the player to change respawn location of
-     * @param location  the location to set the player's respawn
+     *
+     * @param player   the player to change respawn location of
+     * @param location the location to set the player's respawn
      */
     private void setRespawnLocation(Player player, Location<World> location) {
         RespawnLocationData data = player.getOrCreate(RespawnLocationData.class).get(); // It's a player, assume it can be created
