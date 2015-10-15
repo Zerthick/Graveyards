@@ -33,12 +33,14 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.logging.Logger;
 
-@Plugin(id = "Graveyards", name = "Graveyards", version = "0.1")
+@Plugin(id = "Graveyards", name = "Graveyards", version = "0.2.0")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
@@ -88,6 +90,8 @@ public class GraveyardsMain {
             Graveyard nearestGraveyard = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyard != null) {
                 setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
+                player.sendMessage(Texts.of(TextColors.GREEN + "Welcome to the " + TextColors.DARK_GREEN +
+                        nearestGraveyard.getName() + TextColors.GREEN + " graveyard."));
             }
         }
     }
