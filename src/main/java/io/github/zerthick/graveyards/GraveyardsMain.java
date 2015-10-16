@@ -26,6 +26,7 @@ import io.github.zerthick.graveyards.utils.GraveyardManager;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.data.manipulator.mutable.entity.RespawnLocationData;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
@@ -85,13 +86,14 @@ public class GraveyardsMain {
 
     @Listener
     public void onEnitityDeath(DestructEntityEvent.Death event) {
-        if (event.getTargetEntity() instanceof Player) {
-            Player player = (Player) event.getTargetEntity();
+        Entity entity = event.getTargetEntity();
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
             Graveyard nearestGraveyard = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyard != null) {
-                setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
-                player.sendMessage(Texts.of(TextColors.GREEN + "Welcome to the " + TextColors.DARK_GREEN +
-                        nearestGraveyard.getName() + TextColors.GREEN + " graveyard."));
+                //setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
+                player.sendMessage(Texts.of(TextColors.GREEN, "Welcome to the ", TextColors.DARK_GREEN,
+                        nearestGraveyard.getName(), TextColors.GREEN, " graveyard."));
             }
         }
     }
