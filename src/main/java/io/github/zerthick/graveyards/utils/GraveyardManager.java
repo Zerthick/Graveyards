@@ -35,6 +35,22 @@ public class GraveyardManager {
         return graveyardMap;
     }
 
+    public Graveyard getGraveyard(String name, UUID worldUUID){
+        Graveyard graveyardToReturn = null;
+
+        Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
+                new HashSet<>());
+
+        for (Graveyard graveyard : graveyardSet) {
+            if (graveyard.getName().equalsIgnoreCase(name)) {
+                graveyardToReturn = graveyard;
+                break;
+            }
+        }
+
+        return graveyardToReturn;
+    }
+
     public boolean addGraveyard(String name, Vector3i location, UUID worldUUID) {
         Graveyard newGraveyard = new Graveyard(name, location);
         Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
@@ -87,7 +103,7 @@ public class GraveyardManager {
     public Graveyard findNearestGraveyard(Vector3i location, UUID worldUUID) {
         Set<Graveyard> graveyardSet = graveyardMap.get(worldUUID);
         Graveyard nearestGraveyard = null;
-        if (!graveyardSet.isEmpty()) {
+        if (graveyardSet != null && !graveyardSet.isEmpty()) {
             Graveyard currentGraveyard;
             Iterator<Graveyard> it = graveyardSet.iterator();
             nearestGraveyard = it.next();
