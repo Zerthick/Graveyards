@@ -41,7 +41,7 @@ import org.spongepowered.api.world.World;
 
 import java.util.logging.Logger;
 
-@Plugin(id = "Graveyards", name = "Graveyards", version = "0.2.0")
+@Plugin(id = "Graveyards", name = "Graveyards", version = "0.2.1")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
