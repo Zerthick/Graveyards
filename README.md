@@ -21,5 +21,6 @@ graveyards.command.help
 graveyards.command.create
 graveyards.command.destroy
 graveyards.command.list
+graveyards.command.nearest
 graveyards.command.teleport
 ```
