@@ -19,8 +19,6 @@
 
 package io.github.zerthick.graveyards.cmdexecuters;
 
-import com.flowpowered.math.vector.Vector3d;
-import com.flowpowered.math.vector.Vector3i;
 import io.github.zerthick.graveyards.GraveyardsMain;
 import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardManager;
@@ -36,14 +34,10 @@ import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.extent.Extent;
 import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.util.Optional;
 
-/**
- * Created by Chase on 10/15/2015.
- */
 public class GraveyardTeleportExecutor implements CommandExecutor {
 
     private PluginContainer container;
@@ -64,35 +58,35 @@ public class GraveyardTeleportExecutor implements CommandExecutor {
         Optional<String> name = args.getOne("Name");
         Optional<WorldProperties> world = args.getOne("World");
 
-            if (src instanceof Player) {
-                Player player = (Player) src;
-                if (name.isPresent()) {
-                    if (world.isPresent()) {
+        if (src instanceof Player) {
+            Player player = (Player) src;
+            if (name.isPresent()) {
+                if (world.isPresent()) {
 
-                        Graveyard graveyard = manager.getGraveyard(name.get(), world.get().getUniqueId());
-                        if (graveyard != null) {
-                            World extent = plugin.getGame().getServer().getWorld(world.get().getUniqueId()).get();
-                            player.setLocationSafely(new Location<>(extent, graveyard.getLocation()));
-                            src.sendMessage(successMessageBuilder(name.get(), world.get()));
-                        } else {
-                            src.sendMessage(failureMessageBuilder(name.get(), world.get()));
-                        }
-                        return CommandResult.success();
-                    }
-
-                    Graveyard graveyard = manager.getGraveyard(name.get(), player.getWorld().getUniqueId());
+                    Graveyard graveyard = manager.getGraveyard(name.get(), world.get().getUniqueId());
                     if (graveyard != null) {
-                        World extent = player.getWorld();
+                        World extent = plugin.getGame().getServer().getWorld(world.get().getUniqueId()).get();
                         player.setLocationSafely(new Location<>(extent, graveyard.getLocation()));
-                        src.sendMessage(successMessageBuilder(name.get(), player.getWorld().getProperties()));
+                        src.sendMessage(successMessageBuilder(name.get(), world.get()));
                     } else {
-                        src.sendMessage(failureMessageBuilder(name.get(), player.getWorld().getProperties()));
+                        src.sendMessage(failureMessageBuilder(name.get(), world.get()));
                     }
                     return CommandResult.success();
                 }
-                src.sendMessage(Texts.of(TextColors.GREEN,
-                        "You must specify a graveyard name!"));
+
+                Graveyard graveyard = manager.getGraveyard(name.get(), player.getWorld().getUniqueId());
+                if (graveyard != null) {
+                    World extent = player.getWorld();
+                    player.setLocationSafely(new Location<>(extent, graveyard.getLocation()));
+                    src.sendMessage(successMessageBuilder(name.get(), player.getWorld().getProperties()));
+                } else {
+                    src.sendMessage(failureMessageBuilder(name.get(), player.getWorld().getProperties()));
+                }
+                return CommandResult.success();
             }
+            src.sendMessage(Texts.of(TextColors.GREEN,
+                    "You must specify a graveyard name!"));
+        }
 
         src.sendMessage(Texts.of(TextColors.GREEN,
                 "You cannot run this command from the Console!"));

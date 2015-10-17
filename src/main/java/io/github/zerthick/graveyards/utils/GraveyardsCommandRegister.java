@@ -47,7 +47,7 @@ public class GraveyardsCommandRegister {
                 .builder()
                 .description(
                         Texts.of("Teleports you to the graveyard with the given name at the provided world or your current world if none is provided."))
-                .permission("graveyards.command.create")
+                .permission("graveyards.command.teleport")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Texts
                                 .of("Name"))),
@@ -111,10 +111,10 @@ public class GraveyardsCommandRegister {
                 .permission("graveyards.command.help")
                 .executor(new GraveyardExecutor(container))
                 .child(graveyardTeleportCommand, "teleport", "tp")
-                .child(graveyardNearestCommand, "nearest", "closest")
-                .child(graveyardCreateCommand, "create", "add")
-                .child(graveyardDestroyCommand, "destroy", "remove")
-                .child(graveyardListCommand, "list").build();
+                .child(graveyardNearestCommand, "nearest", "closest", "fd")
+                .child(graveyardCreateCommand, "create", "add", "mk")
+                .child(graveyardDestroyCommand, "destroy", "remove", "rm")
+                .child(graveyardListCommand, "list", "ls").build();
         game.getCommandDispatcher().register(container.getInstance(),
                 graveyardCommand, "graveyard", "gy");
     }

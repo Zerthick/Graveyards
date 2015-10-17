@@ -61,7 +61,7 @@ public class GraveyardNearestExecutor implements CommandExecutor {
         if (location.isPresent() && world.isPresent()) {
 
             Graveyard nearestGraveyard = manager.findNearestGraveyard(location.get().toInt(), world.get().getUniqueId());
-            if(nearestGraveyard != null){
+            if (nearestGraveyard != null) {
                 src.sendMessage(successMessageBuilder(world.get(), nearestGraveyard.getName(), nearestGraveyard.getLocation()));
             } else {
                 src.sendMessage(failureMessageBuilder(world.get()));
@@ -72,7 +72,7 @@ public class GraveyardNearestExecutor implements CommandExecutor {
             Player player = (Player) src;
 
             Graveyard nearestGraveyard = manager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
-            if(nearestGraveyard != null){
+            if (nearestGraveyard != null) {
                 src.sendMessage(successMessageBuilder(player.getWorld().getProperties(), nearestGraveyard.getName(), nearestGraveyard.getLocation()));
             } else {
                 src.sendMessage(failureMessageBuilder(player.getWorld().getProperties()));
@@ -94,7 +94,7 @@ public class GraveyardNearestExecutor implements CommandExecutor {
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " at Location ", TextColors.DARK_GREEN, location.toString());
     }
 
-    private Text failureMessageBuilder(WorldProperties world){
+    private Text failureMessageBuilder(WorldProperties world) {
 
         return Texts.of(TextColors.GREEN,
                 "There are no graveyards in World ",

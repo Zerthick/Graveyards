@@ -41,7 +41,7 @@ import org.spongepowered.api.world.World;
 
 import java.util.logging.Logger;
 
-@Plugin(id = "Graveyards", name = "Graveyards", version = "0.2.1")
+@Plugin(id = "Graveyards", name = "Graveyards", version = "0.3.0")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
@@ -91,7 +91,7 @@ public class GraveyardsMain {
             Player player = (Player) entity;
             Graveyard nearestGraveyard = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyard != null) {
-                //setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
+                setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
                 player.sendMessage(Texts.of(TextColors.GREEN, "Welcome to the ", TextColors.DARK_GREEN,
                         nearestGraveyard.getName(), TextColors.GREEN, " graveyard."));
             }

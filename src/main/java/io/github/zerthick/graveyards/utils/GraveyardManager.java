@@ -35,7 +35,7 @@ public class GraveyardManager {
         return graveyardMap;
     }
 
-    public Graveyard getGraveyard(String name, UUID worldUUID){
+    public Graveyard getGraveyard(String name, UUID worldUUID) {
         Graveyard graveyardToReturn = null;
 
         Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
