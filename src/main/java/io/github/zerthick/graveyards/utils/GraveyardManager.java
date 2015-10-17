@@ -64,6 +64,10 @@ public class GraveyardManager {
         return true;
     }
 
+    public boolean exists(String name, UUID worldUUID){
+        return getGraveyard(name, worldUUID) != null;
+    }
+
     public boolean removeGraveyard(String name, UUID worldUUID) {
         Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
                 new HashSet<>());

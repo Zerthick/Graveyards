@@ -35,6 +35,7 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class GraveyardCreateExecutor implements CommandExecutor {
 
@@ -60,17 +61,29 @@ public class GraveyardCreateExecutor implements CommandExecutor {
         if (name.isPresent()) {
             if (location.isPresent() && world.isPresent()) {
 
-                manager.addGraveyard(name.get(), location.get().toInt(), world.get().getUniqueId());
-                src.sendMessage(successMessageBuilder(name.get(), world.get(), location.get()));
+                String graveyardName = name.get();
+                UUID worldUUID = world.get().getUniqueId();
 
+                if(!manager.exists(graveyardName, worldUUID)) {
+                    manager.addGraveyard(graveyardName, location.get().toInt(), worldUUID);
+                    src.sendMessage(successMessageBuilder(graveyardName, world.get(), location.get()));
+                } else {
+                    src.sendMessage(failureMessageBuilder(graveyardName, world.get()));
+                }
                 return CommandResult.success();
             }
             if (src instanceof Player) {
                 Player player = (Player) src;
 
-                manager.addGraveyard(name.get(), player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
-                src.sendMessage(successMessageBuilder(name.get(), player.getWorld().getProperties(), player.getLocation().getPosition()));
+                String graveyardName = name.get();
+                UUID worldUUID = player.getWorld().getUniqueId();
 
+                if(!manager.exists(graveyardName, worldUUID)) {
+                    manager.addGraveyard(graveyardName, player.getLocation().getBlockPosition(), worldUUID);
+                    src.sendMessage(successMessageBuilder(graveyardName, player.getWorld().getProperties(), player.getLocation().getPosition()));
+                } else {
+                    src.sendMessage(failureMessageBuilder(graveyardName, world.get()));
+                }
                 return CommandResult.success();
             }
         }
@@ -89,5 +102,13 @@ public class GraveyardCreateExecutor implements CommandExecutor {
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
                 " at Location ", TextColors.DARK_GREEN, location.toInt().toString());
+    }
+
+    private Text failureMessageBuilder(String name, WorldProperties world) {
+
+        return Texts.of(TextColors.GREEN, "Graveyard ",
+                TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
+                TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
+                " already exists!");
     }
 }
