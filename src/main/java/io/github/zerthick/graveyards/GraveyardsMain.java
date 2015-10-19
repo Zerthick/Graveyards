@@ -24,8 +24,10 @@ import io.github.zerthick.graveyards.utils.DbUtils;
 import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardManager;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
+import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.data.manipulator.mutable.entity.RespawnLocationData;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
@@ -38,9 +40,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.logging.Logger;
-
-@Plugin(id = "Graveyards", name = "Graveyards", version = "0.2.0")
+@Plugin(id = "Graveyards", name = "Graveyards", version = "0.3.1")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
@@ -85,13 +85,14 @@ public class GraveyardsMain {
 
     @Listener
     public void onEnitityDeath(DestructEntityEvent.Death event) {
-        if (event.getTargetEntity() instanceof Player) {
-            Player player = (Player) event.getTargetEntity();
+        Entity entity = event.getTargetEntity();
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
             Graveyard nearestGraveyard = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyard != null) {
                 setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
-                player.sendMessage(Texts.of(TextColors.GREEN + "Welcome to the " + TextColors.DARK_GREEN +
-                        nearestGraveyard.getName() + TextColors.GREEN + " graveyard."));
+                player.sendMessage(Texts.of(TextColors.GREEN, "Welcome to the ", TextColors.DARK_GREEN,
+                        nearestGraveyard.getName(), TextColors.GREEN, " graveyard."));
             }
         }
     }

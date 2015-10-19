@@ -6,7 +6,6 @@
 build/
 gradlew
 gradlew.bat
-gradle-wrapper.properties
 settings.gradle
 # Ignore Gradle GUI config
 gradle-app.setting

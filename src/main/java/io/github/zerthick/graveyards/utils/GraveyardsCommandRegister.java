@@ -20,10 +20,7 @@
 package io.github.zerthick.graveyards.utils;
 
 import io.github.zerthick.graveyards.GraveyardsMain;
-import io.github.zerthick.graveyards.cmdexecuters.GraveyardCreateExecutor;
-import io.github.zerthick.graveyards.cmdexecuters.GraveyardDestroyExecutor;
-import io.github.zerthick.graveyards.cmdexecuters.GraveyardExecutor;
-import io.github.zerthick.graveyards.cmdexecuters.GraveyardListExecutor;
+import io.github.zerthick.graveyards.cmdexecuters.*;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Texts;
@@ -44,6 +41,33 @@ public class GraveyardsCommandRegister {
     }
 
     public void registerCmds() {
+
+        // gy tp <Name> [World]
+        CommandSpec graveyardTeleportCommand = CommandSpec
+                .builder()
+                .description(
+                        Texts.of("Teleports you to the graveyard with the given name at the provided world or your current world if none is provided."))
+                .permission("graveyards.command.teleport")
+                .arguments(
+                        GenericArguments.onlyOne(GenericArguments.string(Texts
+                                .of("Name"))),
+                        GenericArguments.optional(GenericArguments.world(
+                                Texts.of("World"), game)))
+                .executor(new GraveyardTeleportExecutor(container)).build();
+
+        // gy nearest [World] [x, y, z]
+        CommandSpec graveyardNearestCommand = CommandSpec
+                .builder()
+                .description(
+                        Texts.of("Identifies the nearest graveyard from the provided world and location or your current world and location if neither is provided."))
+                .permission("graveyards.command.nearest")
+                .arguments(
+                        GenericArguments.optional(GenericArguments.world(
+                                Texts.of("World"), game)),
+                        GenericArguments.optional(GenericArguments
+                                .vector3d(Texts.of("Location"))))
+                .executor(new GraveyardNearestExecutor(container)).build();
+
         // gy create <Name> [World] [x, y, z]
         CommandSpec graveyardCreateCommand = CommandSpec
                 .builder()
@@ -86,9 +110,11 @@ public class GraveyardsCommandRegister {
                 .description(Texts.of("/gy [list|create|destroy]"))
                 .permission("graveyards.command.help")
                 .executor(new GraveyardExecutor(container))
-                .child(graveyardCreateCommand, "create", "add")
-                .child(graveyardDestroyCommand, "destroy", "remove")
-                .child(graveyardListCommand, "list").build();
+                .child(graveyardTeleportCommand, "teleport", "tp")
+                .child(graveyardNearestCommand, "nearest", "closest", "fd")
+                .child(graveyardCreateCommand, "create", "add", "mk")
+                .child(graveyardDestroyCommand, "destroy", "remove", "rm")
+                .child(graveyardListCommand, "list", "ls").build();
         game.getCommandDispatcher().register(container.getInstance(),
                 graveyardCommand, "graveyard", "gy");
     }
