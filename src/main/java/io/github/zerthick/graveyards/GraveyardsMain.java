@@ -84,7 +84,7 @@ public class GraveyardsMain {
     }
 
     @Listener
-    public void onEnitityDeath(DestructEntityEvent.Death event) {
+    public void onEntityDeath(DestructEntityEvent.Death event) {
         Entity entity = event.getTargetEntity();
         if (entity instanceof Player) {
             Player player = (Player) entity;
