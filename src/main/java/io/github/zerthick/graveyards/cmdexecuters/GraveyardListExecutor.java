@@ -22,6 +22,11 @@ package io.github.zerthick.graveyards.cmdexecuters;
 import io.github.zerthick.graveyards.GraveyardsMain;
 import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardManager;
+import org.spongepowered.api.command.CommandException;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.pagination.PaginationBuilder;
@@ -29,11 +34,6 @@ import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.util.command.CommandException;
-import org.spongepowered.api.util.command.CommandResult;
-import org.spongepowered.api.util.command.CommandSource;
-import org.spongepowered.api.util.command.args.CommandContext;
-import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.util.List;
@@ -54,8 +54,8 @@ public class GraveyardListExecutor implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        GraveyardsMain plugin = (GraveyardsMain) (container.getInstance() instanceof GraveyardsMain ? container
-                .getInstance() : null);
+        GraveyardsMain plugin = (GraveyardsMain) (container.getInstance().get() instanceof GraveyardsMain ? container
+                .getInstance().get() : null);
         GraveyardManager manager = plugin.getGraveyardManager();
 
         Optional<WorldProperties> world = args.getOne("World");

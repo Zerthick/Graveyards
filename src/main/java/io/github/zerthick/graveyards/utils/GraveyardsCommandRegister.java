@@ -22,10 +22,11 @@ package io.github.zerthick.graveyards.utils;
 import io.github.zerthick.graveyards.GraveyardsMain;
 import io.github.zerthick.graveyards.cmdexecuters.*;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.util.command.args.GenericArguments;
-import org.spongepowered.api.util.command.spec.CommandSpec;
+
 
 public class GraveyardsCommandRegister {
 
@@ -35,8 +36,8 @@ public class GraveyardsCommandRegister {
     public GraveyardsCommandRegister(PluginContainer pluginContainer) {
         super();
         container = pluginContainer;
-        GraveyardsMain plugin = (GraveyardsMain) (container.getInstance() instanceof GraveyardsMain ? container
-                .getInstance() : null);
+        GraveyardsMain plugin = (GraveyardsMain) (container.getInstance().get() instanceof GraveyardsMain ? container
+                .getInstance().get() : null);
         game = plugin.getGame();
     }
 
@@ -115,7 +116,7 @@ public class GraveyardsCommandRegister {
                 .child(graveyardCreateCommand, "create", "add", "mk")
                 .child(graveyardDestroyCommand, "destroy", "remove", "rm")
                 .child(graveyardListCommand, "list", "ls").build();
-        game.getCommandDispatcher().register(container.getInstance(),
+        game.getCommandManager().register(container.getInstance().get(),
                 graveyardCommand, "graveyard", "gy");
     }
 }
