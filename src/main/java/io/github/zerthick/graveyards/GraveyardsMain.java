@@ -26,7 +26,9 @@ import io.github.zerthick.graveyards.utils.GraveyardManager;
 import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.data.DataTransactionResult;
 import org.spongepowered.api.data.manipulator.mutable.entity.RespawnLocationData;
+import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -90,9 +92,10 @@ public class GraveyardsMain {
             Player player = (Player) entity;
             Graveyard nearestGraveyard = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyard != null) {
-                setRespawnLocation(player, new Location<>(player.getLocation().getExtent(), nearestGraveyard.getLocation()));
+                setRespawnLocation(player, new Location<>(player.getWorld(), nearestGraveyard.getLocation()));
                 player.sendMessage(Texts.of(TextColors.GREEN, "Welcome to the ", TextColors.DARK_GREEN,
                         nearestGraveyard.getName(), TextColors.GREEN, " graveyard."));
+
             }
         }
     }
@@ -111,8 +114,6 @@ public class GraveyardsMain {
      * @param location the location to set the player's respawn
      */
     private void setRespawnLocation(Player player, Location<World> location) {
-        RespawnLocationData data = player.getOrCreate(RespawnLocationData.class).get(); // It's a player, assume it can be created
-        data.respawnLocation().put(location.getExtent().getUniqueId(), location.getPosition());
-        player.offer(data);
+        getGame().getCommandManager().process(getGame().getServer().getConsole(), "minecraft:spawnpoint " +  player.getName() + " " + location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ());
     }
 }
