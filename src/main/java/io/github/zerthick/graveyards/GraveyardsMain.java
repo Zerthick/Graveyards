@@ -39,7 +39,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-@Plugin(id = "Graveyards", name = "Graveyards", version = "0.3.2")
+@Plugin(id = "Graveyards", name = "Graveyards", version = "1.0.0")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
