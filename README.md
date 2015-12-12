@@ -1,8 +1,6 @@
 # Graveyards
 Graveyards is a simple spawnpoint defining plugin. When players die, they respawn at the nearest graveyard.
 
-**Note:** Graveyards currently **does not work** and is waiting on the RespawnLocationData processor to be implemented.
-
 You can check out the Graveyards Sponge Forum Post [here](https://forums.spongepowered.org/t/wip-graveyards-v0-1-0-pre-defined-spawnpoints-for-players/9575 "Graveyards Sponge Forum Post")!
  
 ##Commands
