@@ -17,11 +17,10 @@
  * along with Graveyards.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.zerthick.graveyards.cmdexecuters;
+package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
 import io.github.zerthick.graveyards.GraveyardsMain;
 import io.github.zerthick.graveyards.utils.Graveyard;
-import io.github.zerthick.graveyards.utils.GraveyardManager;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -40,23 +39,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class GraveyardListExecutor implements CommandExecutor {
-
-    private PluginContainer container;
-
+public class GraveyardListExecutor extends AbstractCmdExecutor implements CommandExecutor {
 
     public GraveyardListExecutor(PluginContainer pluginContainer) {
-        super();
-        this.container = pluginContainer;
+        super(pluginContainer);
     }
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
-
-        GraveyardsMain plugin = (GraveyardsMain) (container.getInstance().get() instanceof GraveyardsMain ? container
-                .getInstance().get() : null);
-        GraveyardManager manager = plugin.getGraveyardManager();
 
         Optional<WorldProperties> world = args.getOne("World");
 

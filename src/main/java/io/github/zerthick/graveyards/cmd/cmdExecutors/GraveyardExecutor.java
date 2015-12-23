@@ -17,7 +17,7 @@
  * along with Graveyards.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.zerthick.graveyards.cmdexecuters;
+package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -29,13 +29,10 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
 
-public class GraveyardExecutor implements CommandExecutor {
-
-    private PluginContainer container;
+public class GraveyardExecutor extends AbstractCmdExecutor implements CommandExecutor {
 
     public GraveyardExecutor(PluginContainer pluginContainer) {
-        super();
-        container = pluginContainer;
+        super(pluginContainer);
     }
 
     @Override

@@ -20,10 +20,10 @@
 package io.github.zerthick.graveyards;
 
 import com.google.inject.Inject;
+import io.github.zerthick.graveyards.cmd.GraveyardsCommandRegister;
 import io.github.zerthick.graveyards.utils.DbUtils;
 import io.github.zerthick.graveyards.utils.Graveyard;
 import io.github.zerthick.graveyards.utils.GraveyardManager;
-import io.github.zerthick.graveyards.utils.GraveyardsCommandRegister;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.Entity;
@@ -43,27 +43,24 @@ import org.spongepowered.api.world.World;
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
+    @Inject
+    private Game game;
+    @Inject
+    private Logger logger;
+    @Inject
+    private PluginContainer instance;
 
     public GraveyardManager getGraveyardManager() {
         return graveyardManager;
     }
 
-    @Inject
-    private Game game;
-
     public Game getGame() {
         return game;
     }
 
-    @Inject
-    private Logger logger;
-
     public Logger getLogger() {
         return logger;
     }
-
-    @Inject
-    private PluginContainer instance;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {

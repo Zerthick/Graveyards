@@ -17,11 +17,10 @@
  * along with Graveyards.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.zerthick.graveyards.utils;
+package io.github.zerthick.graveyards.cmd;
 
-import io.github.zerthick.graveyards.GraveyardsMain;
-import io.github.zerthick.graveyards.cmdexecuters.*;
-import org.spongepowered.api.Game;
+import io.github.zerthick.graveyards.cmd.cmdExecutors.*;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -31,14 +30,10 @@ import org.spongepowered.api.text.Texts;
 public class GraveyardsCommandRegister {
 
     private PluginContainer container;
-    private Game game;
 
     public GraveyardsCommandRegister(PluginContainer pluginContainer) {
         super();
         container = pluginContainer;
-        GraveyardsMain plugin = (GraveyardsMain) (container.getInstance().get() instanceof GraveyardsMain ? container
-                .getInstance().get() : null);
-        game = plugin.getGame();
     }
 
     public void registerCmds() {
@@ -53,7 +48,7 @@ public class GraveyardsCommandRegister {
                         GenericArguments.onlyOne(GenericArguments.string(Texts
                                 .of("Name"))),
                         GenericArguments.optional(GenericArguments.world(
-                                Texts.of("World"), game)))
+                                Texts.of("World"))))
                 .executor(new GraveyardTeleportExecutor(container)).build();
 
         // gy nearest [World] [x, y, z]
@@ -64,7 +59,7 @@ public class GraveyardsCommandRegister {
                 .permission("graveyards.command.nearest")
                 .arguments(
                         GenericArguments.optional(GenericArguments.world(
-                                Texts.of("World"), game)),
+                                Texts.of("World"))),
                         GenericArguments.optional(GenericArguments
                                 .vector3d(Texts.of("Location"))))
                 .executor(new GraveyardNearestExecutor(container)).build();
@@ -79,10 +74,11 @@ public class GraveyardsCommandRegister {
                         GenericArguments.onlyOne(GenericArguments.string(Texts
                                 .of("Name"))),
                         GenericArguments.optional(GenericArguments.world(
-                                Texts.of("World"), game)),
+                                Texts.of("World"))),
                         GenericArguments.optional(GenericArguments
                                 .vector3d(Texts.of("Location"))))
                 .executor(new GraveyardCreateExecutor(container)).build();
+
         // gy destroy <Name> [World]
         CommandSpec graveyardDestroyCommand = CommandSpec
                 .builder()
@@ -93,8 +89,9 @@ public class GraveyardsCommandRegister {
                         GenericArguments.onlyOne(GenericArguments.string(Texts
                                 .of("Name"))),
                         GenericArguments.optional(GenericArguments.world(
-                                Texts.of("World"), game)))
+                                Texts.of("World"))))
                 .executor(new GraveyardDestroyExecutor(container)).build();
+
         // gy list [World]
         CommandSpec graveyardListCommand = CommandSpec
                 .builder()
@@ -104,8 +101,9 @@ public class GraveyardsCommandRegister {
                 .arguments(
                         GenericArguments.optional(GenericArguments
                                 .onlyOne(GenericArguments.world(
-                                        Texts.of("World"), game))))
+                                        Texts.of("World")))))
                 .executor(new GraveyardListExecutor(container)).build();
+
         // gy
         CommandSpec graveyardCommand = CommandSpec.builder()
                 .description(Texts.of("/gy [list|create|destroy]"))
@@ -116,7 +114,7 @@ public class GraveyardsCommandRegister {
                 .child(graveyardCreateCommand, "create", "add", "mk")
                 .child(graveyardDestroyCommand, "destroy", "remove", "rm")
                 .child(graveyardListCommand, "list", "ls").build();
-        game.getCommandManager().register(container.getInstance().get(),
+        Sponge.getGame().getCommandManager().register(container.getInstance().get(),
                 graveyardCommand, "graveyard", "gy");
     }
 }
