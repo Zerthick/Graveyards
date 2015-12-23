@@ -21,9 +21,9 @@ package io.github.zerthick.graveyards;
 
 import com.google.inject.Inject;
 import io.github.zerthick.graveyards.cmd.GraveyardsCommandRegister;
+import io.github.zerthick.graveyards.graveyard.Graveyard;
+import io.github.zerthick.graveyards.graveyard.GraveyardManager;
 import io.github.zerthick.graveyards.utils.DbUtils;
-import io.github.zerthick.graveyards.utils.Graveyard;
-import io.github.zerthick.graveyards.utils.GraveyardManager;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.Entity;

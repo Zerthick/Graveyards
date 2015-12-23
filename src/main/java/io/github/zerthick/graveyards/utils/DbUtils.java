@@ -20,6 +20,7 @@
 package io.github.zerthick.graveyards.utils;
 
 import com.flowpowered.math.vector.Vector3i;
+import io.github.zerthick.graveyards.graveyard.Graveyard;
 
 import java.sql.*;
 import java.util.*;

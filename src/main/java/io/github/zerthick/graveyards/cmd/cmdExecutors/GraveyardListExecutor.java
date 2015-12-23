@@ -20,7 +20,7 @@
 package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
 import io.github.zerthick.graveyards.GraveyardsMain;
-import io.github.zerthick.graveyards.utils.Graveyard;
+import io.github.zerthick.graveyards.graveyard.Graveyard;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

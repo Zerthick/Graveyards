@@ -17,7 +17,7 @@
  * along with Graveyards.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.zerthick.graveyards.utils;
+package io.github.zerthick.graveyards.graveyard;
 
 import com.flowpowered.math.vector.Vector3i;
 
