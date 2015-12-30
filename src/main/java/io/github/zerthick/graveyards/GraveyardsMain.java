@@ -30,16 +30,22 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-@Plugin(id = "Graveyards", name = "Graveyards", version = "1.0.0")
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+@Plugin(id = "Graveyards", name = "Graveyards", version = "1.1.0")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
@@ -62,6 +68,8 @@ public class GraveyardsMain {
         return logger;
     }
 
+    private Map<UUID, Text> deathMessages;
+
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
 
@@ -72,6 +80,9 @@ public class GraveyardsMain {
         GraveyardsCommandRegister commandRegister = new GraveyardsCommandRegister(
                 instance);
         commandRegister.registerCmds();
+
+        // Initialize Death Messages Map
+        deathMessages = new HashMap<>();
 
         // Log Start Up to Console
         getLogger().info(
@@ -87,10 +98,17 @@ public class GraveyardsMain {
             Graveyard nearestGraveyard = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyard != null) {
                 setRespawnLocation(player, new Location<>(player.getWorld(), nearestGraveyard.getLocation()));
-                player.sendMessage(Texts.of(TextColors.GREEN, "Welcome to the ", TextColors.DARK_GREEN,
+                deathMessages.put(player.getUniqueId(), Texts.of(TextColors.GREEN, "Welcome to the ", TextColors.DARK_GREEN,
                         nearestGraveyard.getName(), TextColors.GREEN, " graveyard."));
-
             }
+        }
+    }
+
+    @Listener
+    public void onPlayerRespawn(RespawnPlayerEvent event) {
+        Player player = event.getTargetEntity();
+        if (deathMessages.containsKey(player.getUniqueId())) {
+            player.sendMessage(deathMessages.remove(player.getUniqueId()));
         }
     }
 
