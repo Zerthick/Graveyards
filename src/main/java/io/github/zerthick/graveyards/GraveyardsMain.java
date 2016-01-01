@@ -36,7 +36,6 @@ import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -55,6 +54,7 @@ public class GraveyardsMain {
     private Logger logger;
     @Inject
     private PluginContainer instance;
+    private Map<UUID, Text> deathMessages;
 
     public GraveyardManager getGraveyardManager() {
         return graveyardManager;
@@ -67,8 +67,6 @@ public class GraveyardsMain {
     public Logger getLogger() {
         return logger;
     }
-
-    private Map<UUID, Text> deathMessages;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
@@ -98,7 +96,7 @@ public class GraveyardsMain {
             Graveyard nearestGraveyard = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyard != null) {
                 setRespawnLocation(player, new Location<>(player.getWorld(), nearestGraveyard.getLocation()));
-                deathMessages.put(player.getUniqueId(), Texts.of(TextColors.GREEN, "Welcome to the ", TextColors.DARK_GREEN,
+                deathMessages.put(player.getUniqueId(), Text.of(TextColors.GREEN, "Welcome to the ", TextColors.DARK_GREEN,
                         nearestGraveyard.getName(), TextColors.GREEN, " graveyard."));
             }
         }
