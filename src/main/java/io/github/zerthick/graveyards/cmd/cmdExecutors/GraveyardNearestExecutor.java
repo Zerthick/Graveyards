@@ -30,7 +30,6 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.storage.WorldProperties;
 
@@ -72,7 +71,7 @@ public class GraveyardNearestExecutor extends AbstractCmdExecutor implements Com
             return CommandResult.success();
         }
 
-        src.sendMessage(Texts.of(TextColors.GREEN,
+        src.sendMessage(Text.of(TextColors.GREEN,
                 "You must specify a Name and World for the graveyard!"));
 
         return CommandResult.empty();
@@ -80,14 +79,14 @@ public class GraveyardNearestExecutor extends AbstractCmdExecutor implements Com
 
     private Text successMessageBuilder(WorldProperties world, String name, Vector3i location) {
 
-        return Texts.of(TextColors.GREEN, "The nearest Graveyard in World ",
+        return Text.of(TextColors.GREEN, "The nearest Graveyard in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN, " is Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " at Location ", TextColors.DARK_GREEN, location.toString());
     }
 
     private Text failureMessageBuilder(WorldProperties world) {
 
-        return Texts.of(TextColors.GREEN,
+        return Text.of(TextColors.GREEN,
                 "There are no graveyards in World ",
                 TextColors.DARK_GREEN, world.getWorldName());
     }

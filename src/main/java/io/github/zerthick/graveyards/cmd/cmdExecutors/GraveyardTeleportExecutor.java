@@ -28,7 +28,6 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -75,11 +74,11 @@ public class GraveyardTeleportExecutor extends AbstractCmdExecutor implements Co
                 }
                 return CommandResult.success();
             }
-            src.sendMessage(Texts.of(TextColors.GREEN,
+            src.sendMessage(Text.of(TextColors.GREEN,
                     "You must specify a graveyard name!"));
         }
 
-        src.sendMessage(Texts.of(TextColors.GREEN,
+        src.sendMessage(Text.of(TextColors.GREEN,
                 "You cannot run this command from the Console!"));
 
         return CommandResult.empty();
@@ -87,13 +86,13 @@ public class GraveyardTeleportExecutor extends AbstractCmdExecutor implements Co
 
     private Text successMessageBuilder(String name, WorldProperties world) {
 
-        return Texts.of(TextColors.GREEN, "Teleporting you to Graveyard ",
+        return Text.of(TextColors.GREEN, "Teleporting you to Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName());
     }
 
     private Text failureMessageBuilder(String name, WorldProperties world) {
-        return Texts.of(TextColors.GREEN, "There is no Graveyard  ",
+        return Text.of(TextColors.GREEN, "There is no Graveyard  ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName());
     }

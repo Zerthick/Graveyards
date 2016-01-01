@@ -24,7 +24,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 
 
 public class GraveyardsCommandRegister {
@@ -42,71 +42,71 @@ public class GraveyardsCommandRegister {
         CommandSpec graveyardTeleportCommand = CommandSpec
                 .builder()
                 .description(
-                        Texts.of("Teleports you to the graveyard with the given name at the provided world or your current world if none is provided."))
+                        Text.of("Teleports you to the graveyard with the given name at the provided world or your current world if none is provided."))
                 .permission("graveyards.command.teleport")
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Texts
+                        GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of("Name"))),
                         GenericArguments.optional(GenericArguments.world(
-                                Texts.of("World"))))
+                                Text.of("World"))))
                 .executor(new GraveyardTeleportExecutor(container)).build();
 
         // gy nearest [World] [x, y, z]
         CommandSpec graveyardNearestCommand = CommandSpec
                 .builder()
                 .description(
-                        Texts.of("Identifies the nearest graveyard from the provided world and location or your current world and location if neither is provided."))
+                        Text.of("Identifies the nearest graveyard from the provided world and location or your current world and location if neither is provided."))
                 .permission("graveyards.command.nearest")
                 .arguments(
                         GenericArguments.optional(GenericArguments.world(
-                                Texts.of("World"))),
+                                Text.of("World"))),
                         GenericArguments.optional(GenericArguments
-                                .vector3d(Texts.of("Location"))))
+                                .vector3d(Text.of("Location"))))
                 .executor(new GraveyardNearestExecutor(container)).build();
 
         // gy create <Name> [World] [x, y, z]
         CommandSpec graveyardCreateCommand = CommandSpec
                 .builder()
                 .description(
-                        Texts.of("Creates a graveyard with the given name at the provided world and location or your current world and location if neither is provided."))
+                        Text.of("Creates a graveyard with the given name at the provided world and location or your current world and location if neither is provided."))
                 .permission("graveyards.command.create")
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Texts
+                        GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of("Name"))),
                         GenericArguments.optional(GenericArguments.world(
-                                Texts.of("World"))),
+                                Text.of("World"))),
                         GenericArguments.optional(GenericArguments
-                                .vector3d(Texts.of("Location"))))
+                                .vector3d(Text.of("Location"))))
                 .executor(new GraveyardCreateExecutor(container)).build();
 
         // gy destroy <Name> [World]
         CommandSpec graveyardDestroyCommand = CommandSpec
                 .builder()
                 .description(
-                        Texts.of("Destroys a graveyard with the given name in the provided world or your current world if none is provided."))
+                        Text.of("Destroys a graveyard with the given name in the provided world or your current world if none is provided."))
                 .permission("graveyards.command.destroy")
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Texts
+                        GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of("Name"))),
                         GenericArguments.optional(GenericArguments.world(
-                                Texts.of("World"))))
+                                Text.of("World"))))
                 .executor(new GraveyardDestroyExecutor(container)).build();
 
         // gy list [World]
         CommandSpec graveyardListCommand = CommandSpec
                 .builder()
                 .description(
-                        Texts.of("Lists all graveyards in the provided world or your current world if none is provided."))
+                        Text.of("Lists all graveyards in the provided world or your current world if none is provided."))
                 .permission("graveyards.command.list")
                 .arguments(
                         GenericArguments.optional(GenericArguments
                                 .onlyOne(GenericArguments.world(
-                                        Texts.of("World")))))
+                                        Text.of("World")))))
                 .executor(new GraveyardListExecutor(container)).build();
 
         // gy
         CommandSpec graveyardCommand = CommandSpec.builder()
-                .description(Texts.of("/gy [list|create|destroy]"))
+                .description(Text.of("/gy [list|create|destroy]"))
                 .permission("graveyards.command.help")
                 .executor(new GraveyardExecutor(container))
                 .child(graveyardTeleportCommand, "teleport", "tp")

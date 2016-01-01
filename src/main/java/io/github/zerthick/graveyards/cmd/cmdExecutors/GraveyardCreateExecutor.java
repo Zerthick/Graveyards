@@ -28,7 +28,6 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.storage.WorldProperties;
 
@@ -80,7 +79,7 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
             }
         }
 
-        src.sendMessage(Texts
+        src.sendMessage(Text
                 .of(TextColors.GREEN,
                         "You must specify a Name, World, and Location for the graveyard!"));
 
@@ -90,7 +89,7 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
     private Text successMessageBuilder(String name, WorldProperties world,
                                        Vector3d location) {
 
-        return Texts.of(TextColors.GREEN, "Created Graveyard ",
+        return Text.of(TextColors.GREEN, "Created Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
                 " at Location ", TextColors.DARK_GREEN, location.toInt().toString());
@@ -98,7 +97,7 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
 
     private Text failureMessageBuilder(String name, WorldProperties world) {
 
-        return Texts.of(TextColors.GREEN, "Graveyard ",
+        return Text.of(TextColors.GREEN, "Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
                 " already exists!");

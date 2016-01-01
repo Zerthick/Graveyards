@@ -25,7 +25,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 
@@ -39,7 +39,7 @@ public class GraveyardExecutor extends AbstractCmdExecutor implements CommandExe
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        src.sendMessage(Texts.of(TextColors.DARK_GREEN, container.getName(),
+        src.sendMessage(Text.of(TextColors.DARK_GREEN, container.getName(),
                 TextColors.GREEN, " version: ", TextColors.DARK_GREEN,
                 container.getVersion(), TextColors.GREEN, " by ",
                 TextColors.DARK_GREEN, "Zerthick"));

@@ -31,7 +31,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.pagination.PaginationBuilder;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.storage.WorldProperties;
 
@@ -56,7 +55,7 @@ public class GraveyardListExecutor extends AbstractCmdExecutor implements Comman
             if (!graveyardList.isEmpty()) {
                 listBuilder(world.get(), graveyardList, plugin).sendTo(src);
             } else {
-                src.sendMessage(Texts.of(TextColors.GREEN,
+                src.sendMessage(Text.of(TextColors.GREEN,
                         "There are no graveyards in World ",
                         TextColors.DARK_GREEN, world.get().getWorldName()));
             }
@@ -68,29 +67,29 @@ public class GraveyardListExecutor extends AbstractCmdExecutor implements Comman
             if (!graveyardList.isEmpty()) {
                 listBuilder(player.getWorld().getProperties(), graveyardList, plugin).sendTo(src);
             } else {
-                src.sendMessage(Texts.of(TextColors.GREEN,
+                src.sendMessage(Text.of(TextColors.GREEN,
                         "There are no graveyards in World ",
                         TextColors.DARK_GREEN, player.getWorld().getName()));
             }
             return CommandResult.success();
         }
-        src.sendMessage(Texts.of("You must specify a world from the console!"));
+        src.sendMessage(Text.of("You must specify a world from the console!"));
         return CommandResult.empty();
     }
 
     private PaginationBuilder listBuilder(WorldProperties world,
                                           List<Graveyard> graveyardList, GraveyardsMain plugin) {
 
-        List<Text> graveyardInfo = graveyardList.stream().map(graveyard -> Texts.of(graveyard.getName(), ": ",
+        List<Text> graveyardInfo = graveyardList.stream().map(graveyard -> Text.of(graveyard.getName(), ": ",
                 graveyard.getLocation().toString())).collect(Collectors.toList());
 
         PaginationService pagServ = plugin.getGame().getServiceManager().provide(PaginationService.class).get();
         PaginationBuilder builder = pagServ.builder();
         builder.contents(graveyardInfo)
-                .title(Texts
+                .title(Text
                         .builder("Graveyards in ")
                         .color(TextColors.GREEN)
-                        .append(Texts.builder(world.getWorldName())
+                        .append(Text.builder(world.getWorldName())
                                 .color(TextColors.DARK_GREEN).build()).build())
                 .paddingString("-");
         return builder;
