@@ -26,6 +26,7 @@ import io.github.zerthick.graveyards.graveyard.GraveyardManager;
 import io.github.zerthick.graveyards.utils.DbUtils;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -37,6 +38,7 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.RespawnLocation;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -44,7 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Plugin(id = "graveyards", name = "Graveyards", version = "1.2.0")
+@Plugin(id = "graveyards", name = "Graveyards", version = "1.2.1")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
@@ -124,9 +126,8 @@ public class GraveyardsMain {
      * @param location the location to set the player's respawn
      */
     private void setRespawnLocation(Player player, Location<World> location) {
-        getGame().getCommandManager().process(getGame().getServer().getConsole(), "minecraft:spawnpoint " +  player.getName() + " " + location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ());
-        /*Map<UUID, RespawnLocation> respawnLocationMap = player.get(Keys.RESPAWN_LOCATIONS).orElse(new HashMap<>());
+        Map<UUID, RespawnLocation> respawnLocationMap = player.get(Keys.RESPAWN_LOCATIONS).orElse(new HashMap<>());
         respawnLocationMap.put(location.getExtent().getUniqueId(), RespawnLocation.builder().location(location).forceSpawn(true).build());
-        player.offer(Keys.RESPAWN_LOCATIONS, respawnLocationMap);*/
+        player.offer(Keys.RESPAWN_LOCATIONS, respawnLocationMap);
     }
 }
