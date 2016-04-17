@@ -44,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Plugin(id = "graveyards", name = "Graveyards", version = "1.1.1")
+@Plugin(id = "graveyards", name = "Graveyards", version = "1.2.0")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
