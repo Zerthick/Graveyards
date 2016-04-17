@@ -44,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Plugin(id = "Graveyards", name = "Graveyards", version = "1.1.1")
+@Plugin(id = "graveyards", name = "Graveyards", version = "1.1.1")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
@@ -84,7 +84,7 @@ public class GraveyardsMain {
 
         // Log Start Up to Console
         getLogger().info(
-                instance.getName() + " version " + instance.getVersion()
+                instance.getName() + " version " + instance.getVersion().orElse("")
                         + " enabled!");
     }
 
@@ -125,5 +125,8 @@ public class GraveyardsMain {
      */
     private void setRespawnLocation(Player player, Location<World> location) {
         getGame().getCommandManager().process(getGame().getServer().getConsole(), "minecraft:spawnpoint " +  player.getName() + " " + location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ());
+        /*Map<UUID, RespawnLocation> respawnLocationMap = player.get(Keys.RESPAWN_LOCATIONS).orElse(new HashMap<>());
+        respawnLocationMap.put(location.getExtent().getUniqueId(), RespawnLocation.builder().location(location).forceSpawn(true).build());
+        player.offer(Keys.RESPAWN_LOCATIONS, respawnLocationMap);*/
     }
 }

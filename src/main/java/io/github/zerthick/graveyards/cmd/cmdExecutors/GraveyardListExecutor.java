@@ -28,7 +28,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.service.pagination.PaginationBuilder;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -77,21 +77,21 @@ public class GraveyardListExecutor extends AbstractCmdExecutor implements Comman
         return CommandResult.empty();
     }
 
-    private PaginationBuilder listBuilder(WorldProperties world,
-                                          List<Graveyard> graveyardList, GraveyardsMain plugin) {
+    private PaginationList.Builder listBuilder(WorldProperties world,
+                                               List<Graveyard> graveyardList, GraveyardsMain plugin) {
 
         List<Text> graveyardInfo = graveyardList.stream().map(graveyard -> Text.of(graveyard.getName(), ": ",
                 graveyard.getLocation().toString())).collect(Collectors.toList());
 
         PaginationService pagServ = plugin.getGame().getServiceManager().provide(PaginationService.class).get();
-        PaginationBuilder builder = pagServ.builder();
+        PaginationList.Builder builder = pagServ.builder();
         builder.contents(graveyardInfo)
                 .title(Text
                         .builder("Graveyards in ")
                         .color(TextColors.GREEN)
                         .append(Text.builder(world.getWorldName())
                                 .color(TextColors.DARK_GREEN).build()).build())
-                .paddingString("-");
+                .padding(Text.of("-"));
         return builder;
     }
 }
