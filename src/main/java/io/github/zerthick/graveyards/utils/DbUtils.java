@@ -100,7 +100,7 @@ public class DbUtils {
                     Vector3i graveyardLocation = new Vector3i(graveyardRecords.getInt("X"), graveyardRecords.getInt("Y"), graveyardRecords.getInt("Z"));
 
                     Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID, new HashSet<>());
-                    graveyardSet.add(new Graveyard(graveyardName, graveyardLocation));
+                    //graveyardSet.add(new Graveyard(graveyardName, graveyardLocation));
                     graveyardMap.put(worldUUID, graveyardSet);
                 }
             }

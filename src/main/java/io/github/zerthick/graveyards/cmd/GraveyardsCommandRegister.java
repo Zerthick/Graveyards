@@ -38,6 +38,40 @@ public class GraveyardsCommandRegister {
 
     public void registerCmds() {
 
+        // gy setDistance <Name> [World] <Distance>
+        CommandSpec graveyardSetDistanceCommand = CommandSpec
+                .builder()
+                .description(
+                        Text.of("Sets the discoverability distance of the graveyard with he given name at the provided world or your current world if none is provided.")
+                )
+                .permission("graveyards.command.set.distance")
+                .arguments(
+                        GenericArguments.onlyOne(GenericArguments.string(Text
+                                .of("Name"))),
+                        GenericArguments.optional(GenericArguments.world(
+                                Text.of("World"))),
+                        GenericArguments.onlyOne(
+                                GenericArguments.integer(Text.of("Distance"))
+                        ))
+                .executor(new GraveyardSetDistanceExecutor(container)).build();
+
+        // gy setMessage <Name> [World] <Message>
+        CommandSpec graveyardSetMessageCommand = CommandSpec
+                .builder()
+                .description(
+                        Text.of("Sets the welcome message of the graveyard with he given name at the provided world or your current world if none is provided.")
+                )
+                .permission("graveyards.command.set.message")
+                .arguments(
+                        GenericArguments.onlyOne(GenericArguments.string(Text
+                                .of("Name"))),
+                        GenericArguments.optional(GenericArguments.world(
+                                Text.of("World"))),
+                        GenericArguments.remainingJoinedStrings(
+                                Text.of("Message")
+                        ))
+                .executor(new GraveyardSetMessageExecutor(container)).build();
+
         // gy tp <Name> [World]
         CommandSpec graveyardTeleportCommand = CommandSpec
                 .builder()
@@ -76,7 +110,8 @@ public class GraveyardsCommandRegister {
                         GenericArguments.optional(GenericArguments.world(
                                 Text.of("World"))),
                         GenericArguments.optional(GenericArguments
-                                .vector3d(Text.of("Location"))))
+                                .vector3d(Text.of("Location"))),
+                        GenericArguments.optional(GenericArguments.vector3d(Text.of("Rotation"))))
                 .executor(new GraveyardCreateExecutor(container)).build();
 
         // gy destroy <Name> [World]
@@ -113,7 +148,9 @@ public class GraveyardsCommandRegister {
                 .child(graveyardNearestCommand, "nearest", "closest", "fd")
                 .child(graveyardCreateCommand, "create", "add", "mk")
                 .child(graveyardDestroyCommand, "destroy", "remove", "rm")
-                .child(graveyardListCommand, "list", "ls").build();
+                .child(graveyardListCommand, "list", "ls")
+                .child(graveyardSetMessageCommand, "setMessage", "sm")
+                .child(graveyardSetDistanceCommand, "setDistance", "sd").build();
         Sponge.getGame().getCommandManager().register(container.getInstance().get(),
                 graveyardCommand, "graveyard", "gy");
     }

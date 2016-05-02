@@ -19,81 +19,52 @@
 
 package io.github.zerthick.graveyards.graveyard;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
+import org.spongepowered.api.text.Text;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GraveyardManager {
 
-    private Map<UUID, Set<Graveyard>> graveyardMap;
+    private Map<UUID, Map<String, Graveyard>> graveyardMap;
 
-    public GraveyardManager(Map<UUID, Set<Graveyard>> graveyardMap) {
+    public GraveyardManager(Map<UUID, Map<String, Graveyard>> graveyardMap) {
         this.graveyardMap = graveyardMap;
     }
 
-    public Map<UUID, Set<Graveyard>> getGraveyardMap() {
+    public Map<UUID, Map<String, Graveyard>> getGraveyardMap() {
         return graveyardMap;
     }
 
-    public Graveyard getGraveyard(String name, UUID worldUUID) {
-        Graveyard graveyardToReturn = null;
+    public Optional<Graveyard> getGraveyard(String name, UUID worldUUID) {
+        Graveyard graveyardToReturn = graveyardMap.getOrDefault(worldUUID, new HashMap<>()).get(name);
 
-        Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
-                new HashSet<>());
-
-        for (Graveyard graveyard : graveyardSet) {
-            if (graveyard.getName().equalsIgnoreCase(name)) {
-                graveyardToReturn = graveyard;
-                break;
-            }
-        }
-
-        return graveyardToReturn;
+        return Optional.ofNullable(graveyardToReturn);
     }
 
-    public boolean addGraveyard(String name, Vector3i location, UUID worldUUID) {
-        Graveyard newGraveyard = new Graveyard(name, location);
-        Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
-                new HashSet<>());
+    public void addGraveyard(String name, Vector3i location, Vector3d rotation, UUID worldUUID) {
 
-        if (!graveyardSet.add(newGraveyard)) {
-            return false;
-        }
-        graveyardMap.put(worldUUID, graveyardSet);
-
-        return true;
+        Graveyard graveyardToAdd = new Graveyard(name, location, rotation, Text.of(""), 0);
+        Map<String, Graveyard> graveyardWorldMap = graveyardMap.getOrDefault(worldUUID, new HashMap<>());
+        graveyardWorldMap.put(name, graveyardToAdd);
+        graveyardMap.put(worldUUID, graveyardWorldMap);
     }
 
     public boolean exists(String name, UUID worldUUID){
-        return getGraveyard(name, worldUUID) != null;
+        return getGraveyard(name, worldUUID).isPresent();
     }
 
-    public boolean removeGraveyard(String name, UUID worldUUID) {
-        Set<Graveyard> graveyardSet = graveyardMap.getOrDefault(worldUUID,
-                new HashSet<>());
-
-        for (Graveyard graveyard : graveyardSet) {
-            if (graveyard.getName().equalsIgnoreCase(name)) {
-                graveyardSet.remove(graveyard);
-
-                if (!graveyardSet.isEmpty()) {
-                    graveyardMap.put(worldUUID, graveyardSet);
-                } else {
-                    graveyardMap.remove(worldUUID);
-                }
-                return true;
-            }
+    public Optional<Graveyard> removeGraveyard(String name, UUID worldUUID) {
+        if (graveyardMap.containsKey(worldUUID)) {
+            return Optional.ofNullable(graveyardMap.get(worldUUID).remove(name));
         }
-        return false;
+        return Optional.empty();
     }
 
     public List<Graveyard> getGraveyardList(UUID worldUUID) {
-        Set<Graveyard> graveyardSet = graveyardMap.get(worldUUID);
-        List<Graveyard> graveyardList = new ArrayList<>();
-        if (graveyardSet != null) {
-            graveyardList.addAll(graveyardSet);
-        }
-        return graveyardList;
+        return graveyardMap.getOrDefault(worldUUID, new HashMap<>()).values().stream().collect(Collectors.toList());
     }
 
     /**
@@ -104,13 +75,15 @@ public class GraveyardManager {
      * @param worldUUID the query world
      * @return the nearest graveyard
      */
-    public Graveyard findNearestGraveyard(Vector3i location, UUID worldUUID) {
-        Set<Graveyard> graveyardSet = graveyardMap.get(worldUUID);
+    public Optional<Graveyard> findNearestGraveyard(Vector3i location, UUID worldUUID) {
+        Collection<Graveyard> graveyardCol = graveyardMap.getOrDefault(worldUUID, new HashMap<>()).values();
+
         Graveyard nearestGraveyard = null;
-        if (graveyardSet != null && !graveyardSet.isEmpty()) {
-            Graveyard currentGraveyard;
-            Iterator<Graveyard> it = graveyardSet.iterator();
+
+        if (!graveyardCol.isEmpty()) {
+            Iterator<Graveyard> it = graveyardCol.iterator();
             nearestGraveyard = it.next();
+            Graveyard currentGraveyard;
             while (it.hasNext()) {
                 currentGraveyard = it.next();
                 if (location.distanceSquared(currentGraveyard.getLocation()) < location
@@ -119,6 +92,6 @@ public class GraveyardManager {
                 }
             }
         }
-        return nearestGraveyard;
+        return Optional.ofNullable(nearestGraveyard);
     }
 }

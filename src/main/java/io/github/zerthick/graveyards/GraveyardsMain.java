@@ -19,11 +19,11 @@
 
 package io.github.zerthick.graveyards;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.google.inject.Inject;
 import io.github.zerthick.graveyards.cmd.GraveyardsCommandRegister;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
 import io.github.zerthick.graveyards.graveyard.GraveyardManager;
-import io.github.zerthick.graveyards.utils.DbUtils;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.data.key.Keys;
@@ -37,26 +37,27 @@ import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.RespawnLocation;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Plugin(id = "graveyards", name = "Graveyards", version = "1.2.1")
 public class GraveyardsMain {
 
     private GraveyardManager graveyardManager;
+    private Map<UUID, RespawnDataPacket> respawnDataPackets;
+
     @Inject
     private Game game;
     @Inject
     private Logger logger;
     @Inject
     private PluginContainer instance;
-    private Map<UUID, Text> deathMessages;
 
     public GraveyardManager getGraveyardManager() {
         return graveyardManager;
@@ -74,15 +75,16 @@ public class GraveyardsMain {
     public void onServerStart(GameStartedServerEvent event) {
 
         // Initialize Manager with Graveyards from db
-        graveyardManager = new GraveyardManager(DbUtils.readGraveyards());
+        //graveyardManager = new GraveyardManager(DbUtils.readGraveyards());
+        graveyardManager = new GraveyardManager(new HashMap<>());
+
+        // Initialize Death Messages Map
+        respawnDataPackets = new HashMap<>();
 
         // Register Commands
         GraveyardsCommandRegister commandRegister = new GraveyardsCommandRegister(
                 instance);
         commandRegister.registerCmds();
-
-        // Initialize Death Messages Map
-        deathMessages = new HashMap<>();
 
         // Log Start Up to Console
         getLogger().info(
@@ -95,11 +97,11 @@ public class GraveyardsMain {
         Entity entity = event.getTargetEntity();
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            Graveyard nearestGraveyard = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
-            if (nearestGraveyard != null) {
+            Optional<Graveyard> nearestGraveyardOptional = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
+            if (nearestGraveyardOptional.isPresent()) {
+                Graveyard nearestGraveyard = nearestGraveyardOptional.get();
                 setRespawnLocation(player, new Location<>(player.getWorld(), nearestGraveyard.getLocation()));
-                deathMessages.put(player.getUniqueId(), Text.of(TextColors.GREEN, "Welcome to the ", TextColors.DARK_GREEN,
-                        nearestGraveyard.getName(), TextColors.GREEN, " graveyard."));
+                respawnDataPackets.put(player.getUniqueId(), new RespawnDataPacket(nearestGraveyard.getMessage(), nearestGraveyard.getRotation()));
             }
         }
     }
@@ -107,8 +109,10 @@ public class GraveyardsMain {
     @Listener
     public void onPlayerRespawn(RespawnPlayerEvent event) {
         Player player = event.getTargetEntity();
-        if (deathMessages.containsKey(player.getUniqueId())) {
-            player.sendMessage(deathMessages.remove(player.getUniqueId()));
+        if (respawnDataPackets.containsKey(player.getUniqueId())) {
+            RespawnDataPacket packet = respawnDataPackets.remove(player.getUniqueId());
+            event.setToTransform(event.getToTransform().setRotation(packet.respawnRotation));
+            player.sendMessage(Text.of(packet.respawnMessage));
         }
     }
 
@@ -116,7 +120,7 @@ public class GraveyardsMain {
     public void onServerStop(GameStoppedServerEvent event) {
 
         // Save Graveyards to db
-        DbUtils.writeGraveyards(graveyardManager.getGraveyardMap());
+        //DbUtils.writeGraveyards(graveyardManager.getGraveyardMap());
     }
 
     /**
@@ -129,5 +133,17 @@ public class GraveyardsMain {
         Map<UUID, RespawnLocation> respawnLocationMap = player.get(Keys.RESPAWN_LOCATIONS).orElse(new HashMap<>());
         respawnLocationMap.put(location.getExtent().getUniqueId(), RespawnLocation.builder().location(location).forceSpawn(true).build());
         player.offer(Keys.RESPAWN_LOCATIONS, respawnLocationMap);
+    }
+
+    private class RespawnDataPacket {
+
+        public final Text respawnMessage;
+        public final Vector3d respawnRotation;
+
+        public RespawnDataPacket(Text respawnMessage, Vector3d respawnRotation) {
+            this.respawnMessage = respawnMessage;
+            this.respawnRotation = respawnRotation;
+        }
+
     }
 }

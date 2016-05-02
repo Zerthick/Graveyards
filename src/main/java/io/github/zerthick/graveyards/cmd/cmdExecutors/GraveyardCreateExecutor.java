@@ -48,16 +48,17 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
         Optional<String> name = args.getOne("Name");
         Optional<WorldProperties> world = args.getOne("World");
         Optional<Vector3d> location = args.getOne("Location");
+        Optional<Vector3d> rotation = args.getOne("Rotation");
 
         if (name.isPresent()) {
-            if (location.isPresent() && world.isPresent()) {
+            if (location.isPresent() && world.isPresent() && rotation.isPresent()) {
 
                 String graveyardName = name.get();
                 UUID worldUUID = world.get().getUniqueId();
 
                 if(!manager.exists(graveyardName, worldUUID)) {
-                    manager.addGraveyard(graveyardName, location.get().toInt(), worldUUID);
-                    src.sendMessage(successMessageBuilder(graveyardName, world.get(), location.get()));
+                    manager.addGraveyard(graveyardName, location.get().toInt(), rotation.get(), worldUUID);
+                    src.sendMessage(successMessageBuilder(graveyardName, world.get(), location.get(), rotation.get()));
                 } else {
                     src.sendMessage(failureMessageBuilder(graveyardName, world.get()));
                 }
@@ -70,8 +71,8 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
                 UUID worldUUID = player.getWorld().getUniqueId();
 
                 if(!manager.exists(graveyardName, worldUUID)) {
-                    manager.addGraveyard(graveyardName, player.getLocation().getBlockPosition(), worldUUID);
-                    src.sendMessage(successMessageBuilder(graveyardName, player.getWorld().getProperties(), player.getLocation().getPosition()));
+                    manager.addGraveyard(graveyardName, player.getLocation().getBlockPosition(), player.getRotation(), worldUUID);
+                    src.sendMessage(successMessageBuilder(graveyardName, player.getWorld().getProperties(), player.getLocation().getPosition(), player.getRotation()));
                 } else {
                     src.sendMessage(failureMessageBuilder(graveyardName, world.get()));
                 }
@@ -81,18 +82,19 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
 
         src.sendMessage(Text
                 .of(TextColors.GREEN,
-                        "You must specify a Name, World, and Location for the graveyard!"));
+                        "You must specify a Name, World, Location, and Rotation for the graveyard!"));
 
         return CommandResult.empty();
     }
 
     private Text successMessageBuilder(String name, WorldProperties world,
-                                       Vector3d location) {
+                                       Vector3d location, Vector3d rotation) {
 
         return Text.of(TextColors.GREEN, "Created Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
-                " at Location ", TextColors.DARK_GREEN, location.toInt().toString());
+                " at Location ", TextColors.DARK_GREEN, location.toInt().toString(),
+                TextColors.GREEN, " with rotation ", TextColors.DARK_GREEN, rotation);
     }
 
     private Text failureMessageBuilder(String name, WorldProperties world) {

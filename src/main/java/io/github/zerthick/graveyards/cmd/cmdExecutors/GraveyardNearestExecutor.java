@@ -50,8 +50,9 @@ public class GraveyardNearestExecutor extends AbstractCmdExecutor implements Com
 
         if (location.isPresent() && world.isPresent()) {
 
-            Graveyard nearestGraveyard = manager.findNearestGraveyard(location.get().toInt(), world.get().getUniqueId());
-            if (nearestGraveyard != null) {
+            Optional<Graveyard> nearestGraveyardOptional = manager.findNearestGraveyard(location.get().toInt(), world.get().getUniqueId());
+            if (nearestGraveyardOptional.isPresent()) {
+                Graveyard nearestGraveyard = nearestGraveyardOptional.get();
                 src.sendMessage(successMessageBuilder(world.get(), nearestGraveyard.getName(), nearestGraveyard.getLocation()));
             } else {
                 src.sendMessage(failureMessageBuilder(world.get()));
@@ -61,8 +62,9 @@ public class GraveyardNearestExecutor extends AbstractCmdExecutor implements Com
         if (src instanceof Player) {
             Player player = (Player) src;
 
-            Graveyard nearestGraveyard = manager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
-            if (nearestGraveyard != null) {
+            Optional<Graveyard> nearestGraveyardOptional = manager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
+            if (nearestGraveyardOptional.isPresent()) {
+                Graveyard nearestGraveyard = nearestGraveyardOptional.get();
                 src.sendMessage(successMessageBuilder(player.getWorld().getProperties(), nearestGraveyard.getName(), nearestGraveyard.getLocation()));
             } else {
                 src.sendMessage(failureMessageBuilder(player.getWorld().getProperties()));

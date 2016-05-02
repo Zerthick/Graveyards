@@ -53,10 +53,10 @@ public class GraveyardTeleportExecutor extends AbstractCmdExecutor implements Co
             if (name.isPresent()) {
                 if (world.isPresent()) {
 
-                    Graveyard graveyard = manager.getGraveyard(name.get(), world.get().getUniqueId());
-                    if (graveyard != null) {
+                    Optional<Graveyard> graveyardOptional = manager.getGraveyard(name.get(), world.get().getUniqueId());
+                    if (graveyardOptional.isPresent()) {
                         World extent = plugin.getGame().getServer().getWorld(world.get().getUniqueId()).get();
-                        player.setLocationSafely(new Location<>(extent, graveyard.getLocation()));
+                        player.setLocationSafely(new Location<>(extent, graveyardOptional.get().getLocation()));
                         src.sendMessage(successMessageBuilder(name.get(), world.get()));
                     } else {
                         src.sendMessage(failureMessageBuilder(name.get(), world.get()));
@@ -64,10 +64,10 @@ public class GraveyardTeleportExecutor extends AbstractCmdExecutor implements Co
                     return CommandResult.success();
                 }
 
-                Graveyard graveyard = manager.getGraveyard(name.get(), player.getWorld().getUniqueId());
-                if (graveyard != null) {
+                Optional<Graveyard> graveyardOptional = manager.getGraveyard(name.get(), player.getWorld().getUniqueId());
+                if (graveyardOptional.isPresent()) {
                     World extent = player.getWorld();
-                    player.setLocationSafely(new Location<>(extent, graveyard.getLocation()));
+                    player.setLocationSafely(new Location<>(extent, graveyardOptional.get().getLocation()));
                     src.sendMessage(successMessageBuilder(name.get(), player.getWorld().getProperties()));
                 } else {
                     src.sendMessage(failureMessageBuilder(name.get(), player.getWorld().getProperties()));
