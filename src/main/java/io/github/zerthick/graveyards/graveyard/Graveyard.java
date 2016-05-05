@@ -28,7 +28,7 @@ public class Graveyard {
 
     private final String name;
     private final Vector3i location;
-    private Vector3d rotation;
+    private final Vector3d rotation;
     private Text message;
     private int DiscoverDistance;
 
@@ -50,10 +50,6 @@ public class Graveyard {
 
     public Vector3d getRotation() {
         return rotation;
-    }
-
-    public void setRotation(Vector3d rotation) {
-        this.rotation = rotation;
     }
 
     public Text getMessage() {

@@ -23,15 +23,21 @@ import com.flowpowered.math.vector.Vector3d;
 import com.google.inject.Inject;
 import io.github.zerthick.graveyards.cmd.GraveyardsCommandRegister;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
-import io.github.zerthick.graveyards.graveyard.GraveyardManager;
+import io.github.zerthick.graveyards.graveyard.GraveyardsManager;
+import io.github.zerthick.graveyards.utils.config.ConfigManager;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -41,15 +47,17 @@ import org.spongepowered.api.util.RespawnLocation;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 @Plugin(id = "graveyards", name = "Graveyards", version = "1.2.1")
-public class GraveyardsMain {
+public class Graveyards {
 
-    private GraveyardManager graveyardManager;
+    private GraveyardsManager graveyardsManager;
+    private ConfigManager configManager;
     private Map<UUID, RespawnDataPacket> respawnDataPackets;
 
     @Inject
@@ -59,8 +67,31 @@ public class GraveyardsMain {
     @Inject
     private PluginContainer instance;
 
-    public GraveyardManager getGraveyardManager() {
-        return graveyardManager;
+    //Config Stuff
+    @Inject
+    @DefaultConfig(sharedRoot = false)
+    private Path defaultConfig;
+    @Inject
+    @DefaultConfig(sharedRoot = false)
+    private ConfigurationLoader<CommentedConfigurationNode> configLoader;
+    @Inject
+    @ConfigDir(sharedRoot = false)
+    private Path defaultConfigDir;
+
+    public Path getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    public ConfigurationLoader<CommentedConfigurationNode> getConfigLoader() {
+        return configLoader;
+    }
+
+    public Path getDefaultConfigDir() {
+        return defaultConfigDir;
+    }
+
+    public GraveyardsManager getGraveyardsManager() {
+        return graveyardsManager;
     }
 
     public Game getGame() {
@@ -72,11 +103,20 @@ public class GraveyardsMain {
     }
 
     @Listener
-    public void onServerStart(GameStartedServerEvent event) {
+    public void onGameInit(GameInitializationEvent event) {
 
-        // Initialize Manager with Graveyards from db
-        //graveyardManager = new GraveyardManager(DbUtils.readGraveyards());
-        graveyardManager = new GraveyardManager(new HashMap<>());
+        //Set up config manager
+        configManager = new ConfigManager(this);
+
+        // Load graveyards from file
+        graveyardsManager = configManager.loadGraveyards();
+
+        // Load config values from file
+        configManager.loadConfigValues();
+    }
+
+    @Listener
+    public void onServerStart(GameStartedServerEvent event) {
 
         // Initialize Death Messages Map
         respawnDataPackets = new HashMap<>();
@@ -97,7 +137,7 @@ public class GraveyardsMain {
         Entity entity = event.getTargetEntity();
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            Optional<Graveyard> nearestGraveyardOptional = graveyardManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
+            Optional<Graveyard> nearestGraveyardOptional = graveyardsManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyardOptional.isPresent()) {
                 Graveyard nearestGraveyard = nearestGraveyardOptional.get();
                 setRespawnLocation(player, new Location<>(player.getWorld(), nearestGraveyard.getLocation()));
@@ -112,15 +152,15 @@ public class GraveyardsMain {
         if (respawnDataPackets.containsKey(player.getUniqueId())) {
             RespawnDataPacket packet = respawnDataPackets.remove(player.getUniqueId());
             event.setToTransform(event.getToTransform().setRotation(packet.respawnRotation));
-            player.sendMessage(Text.of(packet.respawnMessage));
+            player.sendMessage(packet.respawnMessage);
         }
     }
 
     @Listener
     public void onServerStop(GameStoppedServerEvent event) {
 
-        // Save Graveyards to db
-        //DbUtils.writeGraveyards(graveyardManager.getGraveyardMap());
+        // Save graveyards to file
+        configManager.saveGraveyards();
     }
 
     /**

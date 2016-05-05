@@ -19,22 +19,22 @@
 
 package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
-import io.github.zerthick.graveyards.GraveyardsMain;
-import io.github.zerthick.graveyards.graveyard.GraveyardManager;
+import io.github.zerthick.graveyards.Graveyards;
+import io.github.zerthick.graveyards.graveyard.GraveyardsManager;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.plugin.PluginContainer;
 
 public abstract class AbstractCmdExecutor implements CommandExecutor {
 
     protected PluginContainer container;
-    protected GraveyardsMain plugin;
-    protected GraveyardManager manager;
+    protected Graveyards plugin;
+    protected GraveyardsManager manager;
 
     public AbstractCmdExecutor(PluginContainer pluginContainer) {
         super();
         container = pluginContainer;
-        plugin = (container.getInstance().get() instanceof GraveyardsMain ? (GraveyardsMain) container.getInstance().get() : null);
-        manager = plugin.getGraveyardManager();
+        plugin = (container.getInstance().get() instanceof Graveyards ? (Graveyards) container.getInstance().get() : null);
+        manager = plugin.getGraveyardsManager();
     }
 
 }

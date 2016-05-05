@@ -19,7 +19,7 @@
 
 package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
-import io.github.zerthick.graveyards.GraveyardsMain;
+import io.github.zerthick.graveyards.Graveyards;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -78,7 +78,7 @@ public class GraveyardListExecutor extends AbstractCmdExecutor implements Comman
     }
 
     private PaginationList.Builder listBuilder(WorldProperties world,
-                                               List<Graveyard> graveyardList, GraveyardsMain plugin) {
+                                               List<Graveyard> graveyardList, Graveyards plugin) {
 
         List<Text> graveyardInfo = graveyardList.stream().map(graveyard -> Text.of(graveyard.getName(), ": ",
                 graveyard.getLocation().toString())).collect(Collectors.toList());

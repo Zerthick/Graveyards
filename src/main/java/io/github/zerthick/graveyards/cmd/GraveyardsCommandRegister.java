@@ -150,7 +150,8 @@ public class GraveyardsCommandRegister {
                 .child(graveyardDestroyCommand, "destroy", "remove", "rm")
                 .child(graveyardListCommand, "list", "ls")
                 .child(graveyardSetMessageCommand, "setMessage", "sm")
-                .child(graveyardSetDistanceCommand, "setDistance", "sd").build();
+                //.child(graveyardSetDistanceCommand, "setDistance", "sd")
+                .build();
         Sponge.getGame().getCommandManager().register(container.getInstance().get(),
                 graveyardCommand, "graveyard", "gy");
     }

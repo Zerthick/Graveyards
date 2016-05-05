@@ -74,7 +74,7 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
                     manager.addGraveyard(graveyardName, player.getLocation().getBlockPosition(), player.getRotation(), worldUUID);
                     src.sendMessage(successMessageBuilder(graveyardName, player.getWorld().getProperties(), player.getLocation().getPosition(), player.getRotation()));
                 } else {
-                    src.sendMessage(failureMessageBuilder(graveyardName, world.get()));
+                    src.sendMessage(failureMessageBuilder(graveyardName, player.getWorld().getProperties()));
                 }
                 return CommandResult.success();
             }
