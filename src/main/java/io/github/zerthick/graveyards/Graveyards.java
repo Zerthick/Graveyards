@@ -53,7 +53,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-@Plugin(id = "graveyards", name = "Graveyards", version = "1.2.1")
+@Plugin(id = "graveyards",
+        name = "Graveyards",
+        version = "2.0.1",
+        description = "A player spawn-point plugin.")
 public class Graveyards {
 
     private GraveyardsManager graveyardsManager;

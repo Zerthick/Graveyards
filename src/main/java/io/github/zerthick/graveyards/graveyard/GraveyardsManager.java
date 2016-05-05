@@ -22,8 +22,6 @@ package io.github.zerthick.graveyards.graveyard;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.zerthick.graveyards.utils.config.ConfigValues;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,8 +45,7 @@ public class GraveyardsManager {
     }
 
     public void addGraveyard(String name, Vector3i location, Vector3d rotation, UUID worldUUID) {
-        Text welcomeMessage = TextSerializers.FORMATTING_CODE.deserialize(ConfigValues.getInstance().getDefaultGraveyardMessage().replaceAll("\\{GRAVEYARD_NAME\\}", name));
-        Graveyard graveyardToAdd = new Graveyard(name, location, rotation, welcomeMessage, 0);
+        Graveyard graveyardToAdd = new Graveyard(name, location, rotation, ConfigValues.getInstance().getDefaultGraveyardMessage(name), 0);
         Map<String, Graveyard> graveyardWorldMap = graveyardMap.getOrDefault(worldUUID, new HashMap<>());
         graveyardWorldMap.put(name.toLowerCase(), graveyardToAdd);
         graveyardMap.put(worldUUID, graveyardWorldMap);
