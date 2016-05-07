@@ -98,7 +98,7 @@ public class GraveyardsCommandRegister {
                                 .vector3d(Text.of("Location"))))
                 .executor(new GraveyardNearestExecutor(container)).build();
 
-        // gy create <Name> [World] [x, y, z]
+        // gy create <Name> [World] [x, y, z] [x, y, z]
         CommandSpec graveyardCreateCommand = CommandSpec
                 .builder()
                 .description(
