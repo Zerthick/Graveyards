@@ -23,21 +23,32 @@ import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.text.Text;
 
-
+/**
+ * POJO for storing graveyard data
+ */
 public class Graveyard {
 
     private final String name;
     private final Vector3i location;
     private final Vector3d rotation;
     private Text message;
-    private int DiscoverDistance;
+    private int discoverDistance;
 
+    /**
+     * Creates a new Graveyard
+     *
+     * @param name the name of the Graveyard
+     * @param location the location of the Graveyard
+     * @param rotation the rotation to Spawn the Player
+     * @param message the message to send the Player when spawning
+     * @param discoverDistance the minimum distance the player must be in order to discover the graveyard
+     */
     public Graveyard(String name, Vector3i location, Vector3d rotation, Text message, int discoverDistance) {
         this.name = name;
         this.location = location;
         this.rotation = rotation;
         this.message = message;
-        DiscoverDistance = discoverDistance;
+        this.discoverDistance = discoverDistance;
     }
 
     public String getName() {
@@ -61,10 +72,10 @@ public class Graveyard {
     }
 
     public int getDiscoverDistance() {
-        return DiscoverDistance;
+        return discoverDistance;
     }
 
     public void setDiscoverDistance(int discoverDistance) {
-        DiscoverDistance = discoverDistance;
+        this.discoverDistance = discoverDistance;
     }
 }

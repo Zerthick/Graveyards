@@ -121,7 +121,7 @@ public class Graveyards {
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
 
-        // Initialize Death Messages Map
+        // Initialize Respawn Data  Map
         respawnDataPackets = new HashMap<>();
 
         // Register Commands
@@ -152,7 +152,11 @@ public class Graveyards {
     @Listener
     public void onPlayerRespawn(RespawnPlayerEvent event) {
         Player player = event.getTargetEntity();
+
+        // If we have respawn data for the player
         if (respawnDataPackets.containsKey(player.getUniqueId())) {
+
+            //Send the data to the player
             RespawnDataPacket packet = respawnDataPackets.remove(player.getUniqueId());
             event.setToTransform(event.getToTransform().setRotation(packet.respawnRotation));
             player.sendMessage(packet.respawnMessage);
@@ -178,6 +182,9 @@ public class Graveyards {
         player.offer(Keys.RESPAWN_LOCATIONS, respawnLocationMap);
     }
 
+    /**
+     * Private helper class to store info to be sent to the player upon respawning
+     */
     private class RespawnDataPacket {
 
         public final Text respawnMessage;

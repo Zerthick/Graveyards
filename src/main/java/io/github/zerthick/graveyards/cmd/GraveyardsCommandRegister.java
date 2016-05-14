@@ -102,7 +102,7 @@ public class GraveyardsCommandRegister {
         CommandSpec graveyardCreateCommand = CommandSpec
                 .builder()
                 .description(
-                        Text.of("Creates a graveyard with the given name at the provided world and location or your current world and location if neither is provided."))
+                        Text.of(" Creates a graveyard with the given name at the provided world, location and orientaiton, or your current world, location, and orientation if none are provided."))
                 .permission("graveyards.command.create")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
