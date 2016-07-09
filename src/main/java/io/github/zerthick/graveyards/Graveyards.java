@@ -55,7 +55,7 @@ import java.util.UUID;
 
 @Plugin(id = "graveyards",
         name = "Graveyards",
-        version = "2.0.1",
+        version = "2.1.1",
         description = "A player spawn-point plugin.")
 public class Graveyards {
 
@@ -175,7 +175,7 @@ public class Graveyards {
     private void setRespawnLocation(Player player, Location<World> location) {
         Map<UUID, RespawnLocation> respawnLocationMap = player.get(Keys.RESPAWN_LOCATIONS).orElse(new HashMap<>());
         respawnLocationMap.put(location.getExtent().getUniqueId(), RespawnLocation.builder().location(location).forceSpawn(true).build());
-        player.offer(Keys.RESPAWN_LOCATIONS, respawnLocationMap);
+        logger.info("Successful: " + player.offer(Keys.RESPAWN_LOCATIONS, respawnLocationMap).isSuccessful());
     }
 
     private class RespawnDataPacket {
