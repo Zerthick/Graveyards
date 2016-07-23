@@ -20,6 +20,7 @@
 package io.github.zerthick.graveyards;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
 import io.github.zerthick.graveyards.cmd.GraveyardsCommandRegister;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
@@ -32,6 +33,7 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.value.mutable.MapValue;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -143,8 +145,7 @@ public class Graveyards {
             Optional<Graveyard> nearestGraveyardOptional = graveyardsManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
             if (nearestGraveyardOptional.isPresent()) {
                 Graveyard nearestGraveyard = nearestGraveyardOptional.get();
-                setRespawnLocation(player, new Location<>(player.getWorld(), nearestGraveyard.getLocation()));
-                respawnDataPackets.put(player.getUniqueId(), new RespawnDataPacket(nearestGraveyard.getMessage(), nearestGraveyard.getRotation()));
+                respawnDataPackets.put(player.getUniqueId(), new RespawnDataPacket(nearestGraveyard.getMessage(), nearestGraveyard.getRotation(), nearestGraveyard.getLocation()));
             }
         }
     }
@@ -154,7 +155,7 @@ public class Graveyards {
         Player player = event.getTargetEntity();
         if (respawnDataPackets.containsKey(player.getUniqueId())) {
             RespawnDataPacket packet = respawnDataPackets.remove(player.getUniqueId());
-            event.setToTransform(event.getToTransform().setRotation(packet.respawnRotation));
+            event.setToTransform(event.getToTransform().setRotation(packet.respawnRotation).setPosition(packet.respawnLocation.toDouble()));
             player.sendMessage(packet.respawnMessage);
         }
     }
@@ -166,26 +167,16 @@ public class Graveyards {
         configManager.saveGraveyards();
     }
 
-    /**
-     * Private helper method to reset a player's respawn location
-     *
-     * @param player   the player to change respawn location of
-     * @param location the location to set the player's respawn
-     */
-    private void setRespawnLocation(Player player, Location<World> location) {
-        Map<UUID, RespawnLocation> respawnLocationMap = player.get(Keys.RESPAWN_LOCATIONS).orElse(new HashMap<>());
-        respawnLocationMap.put(location.getExtent().getUniqueId(), RespawnLocation.builder().location(location).forceSpawn(true).build());
-        logger.info("Successful: " + player.offer(Keys.RESPAWN_LOCATIONS, respawnLocationMap).isSuccessful());
-    }
-
     private class RespawnDataPacket {
 
         public final Text respawnMessage;
         public final Vector3d respawnRotation;
+        public final Vector3i respawnLocation;
 
-        public RespawnDataPacket(Text respawnMessage, Vector3d respawnRotation) {
+        public RespawnDataPacket(Text respawnMessage, Vector3d respawnRotation, Vector3i respawnLoaction) {
             this.respawnMessage = respawnMessage;
             this.respawnRotation = respawnRotation;
+            this.respawnLocation = respawnLoaction;
         }
 
     }
