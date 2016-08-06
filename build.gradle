@@ -18,7 +18,7 @@
  */
 
 plugins {
-    id 'org.spongepowered.plugin' version '0.5.1'
+    id 'org.spongepowered.plugin' version '0.6'
     id 'java'
 }
 
@@ -33,5 +33,5 @@ repositories {
 }
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:4.0.3'
+    compile 'org.spongepowered:spongeapi:5.0.0-SNAPSHOT'
 }
