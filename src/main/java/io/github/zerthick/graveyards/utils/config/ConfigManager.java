@@ -21,9 +21,11 @@ package io.github.zerthick.graveyards.utils.config;
 
 import com.google.common.reflect.TypeToken;
 import io.github.zerthick.graveyards.Graveyards;
+import io.github.zerthick.graveyards.RespawnDataPacket;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
 import io.github.zerthick.graveyards.graveyard.GraveyardsManager;
 import io.github.zerthick.graveyards.utils.config.serializers.GraveyardSerializer;
+import io.github.zerthick.graveyards.utils.config.serializers.RespawnDataPacketSerializer;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -47,7 +49,8 @@ public class ConfigManager {
         logger = plugin.getLogger();
 
         TypeSerializers.getDefaultSerializers()
-                .registerType(TypeToken.of(Graveyard.class), new GraveyardSerializer());
+                .registerType(TypeToken.of(Graveyard.class), new GraveyardSerializer())
+                .registerType(TypeToken.of(RespawnDataPacket.class), new RespawnDataPacketSerializer());
     }
 
     public GraveyardsManager loadGraveyards() {
@@ -113,6 +116,49 @@ public class ConfigManager {
             logger.warn("Error loading graveyard config! Error:" + e.getMessage());
         } catch (ObjectMappingException e) {
             logger.warn("Error mapping graveyard config! Error:" + e.getMessage());
+        }
+    }
+
+    public Map<UUID, RespawnDataPacket> loadRespawnPackets() {
+
+        File respawnDataFile = new File(plugin.getDefaultConfigDir().toFile(), "respawnData.config");
+        ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(respawnDataFile).build();
+
+        if (respawnDataFile.exists()) {
+            try {
+                CommentedConfigurationNode respawnData = loader.load();
+
+                Map<UUID, RespawnDataPacket> respawnDataMap = respawnData
+                        .getValue(new TypeToken<Map<UUID, RespawnDataPacket>>() {
+                        });
+
+                if (respawnDataMap != null) {
+                    return respawnDataMap;
+                }
+            } catch (IOException e) {
+                logger.warn("Error loading respawn data! Error:" + e.getMessage());
+            } catch (ObjectMappingException e) {
+                logger.warn("Error mapping respawn data! Error:" + e.getMessage());
+            }
+        }
+        return new HashMap<>();
+    }
+
+    public void saveRespawnPackets() {
+
+        File respawnDataFile = new File(plugin.getDefaultConfigDir().toFile(), "respawnData.config");
+        ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(respawnDataFile).build();
+
+        try {
+            CommentedConfigurationNode respawnData = loader.load();
+
+            respawnData.setValue(new TypeToken<Map<UUID, RespawnDataPacket>>() {
+                                 },
+                    plugin.getRespawnDataPacketMap());
+
+            loader.save(respawnData);
+        } catch (IOException | ObjectMappingException e) {
+            logger.warn("Error saving respawn data! Error:" + e.getMessage());
         }
     }
 }

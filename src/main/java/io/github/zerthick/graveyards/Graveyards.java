@@ -19,8 +19,6 @@
 
 package io.github.zerthick.graveyards;
 
-import com.flowpowered.math.vector.Vector3d;
-import com.flowpowered.math.vector.Vector3i;
 import com.google.inject.Inject;
 import io.github.zerthick.graveyards.cmd.GraveyardsCommandRegister;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
@@ -32,8 +30,6 @@ import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.value.mutable.MapValue;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -44,20 +40,15 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.util.RespawnLocation;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 @Plugin(id = "graveyards",
         name = "Graveyards",
-        version = "2.1.1",
+        version = "2.1.2",
         description = "A player spawn-point plugin.")
 public class Graveyards {
 
@@ -118,13 +109,13 @@ public class Graveyards {
 
         // Load config values from file
         configManager.loadConfigValues();
+
+        // Load respawn data from file
+        respawnDataPackets = configManager.loadRespawnPackets();
     }
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-
-        // Initialize Death Messages Map
-        respawnDataPackets = new HashMap<>();
 
         // Register Commands
         GraveyardsCommandRegister commandRegister = new GraveyardsCommandRegister(
@@ -155,8 +146,8 @@ public class Graveyards {
         Player player = event.getTargetEntity();
         if (respawnDataPackets.containsKey(player.getUniqueId())) {
             RespawnDataPacket packet = respawnDataPackets.remove(player.getUniqueId());
-            event.setToTransform(event.getToTransform().setRotation(packet.respawnRotation).setPosition(packet.respawnLocation.toDouble()));
-            player.sendMessage(packet.respawnMessage);
+            event.setToTransform(event.getToTransform().setRotation(packet.getRespawnRotation()).setPosition(packet.getRespawnLocation().toDouble()));
+            player.sendMessage(packet.getRespawnMessage());
         }
     }
 
@@ -165,19 +156,12 @@ public class Graveyards {
 
         // Save graveyards to file
         configManager.saveGraveyards();
+
+        // Save respawn data to file
+        configManager.saveRespawnPackets();
     }
 
-    private class RespawnDataPacket {
-
-        public final Text respawnMessage;
-        public final Vector3d respawnRotation;
-        public final Vector3i respawnLocation;
-
-        public RespawnDataPacket(Text respawnMessage, Vector3d respawnRotation, Vector3i respawnLoaction) {
-            this.respawnMessage = respawnMessage;
-            this.respawnRotation = respawnRotation;
-            this.respawnLocation = respawnLoaction;
-        }
-
+    public Map<UUID, RespawnDataPacket> getRespawnDataPacketMap() {
+        return respawnDataPackets;
     }
 }
