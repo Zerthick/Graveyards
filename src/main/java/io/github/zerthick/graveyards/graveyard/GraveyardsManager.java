@@ -123,7 +123,7 @@ public class GraveyardsManager {
      */
     public Optional<Graveyard> findNearestGraveyard(Vector3i location, UUID worldUUID) {
 
-        return getGraveyardList(worldUUID).parallelStream()
+        return getGraveyardList(worldUUID).stream()
                 .min((g1, g2) -> Integer.compare(location.distanceSquared(g1.getLocation()), location.distanceSquared(g2.getLocation())));
     }
 }
