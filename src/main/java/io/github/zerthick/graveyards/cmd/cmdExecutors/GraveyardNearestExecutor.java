@@ -45,8 +45,8 @@ public class GraveyardNearestExecutor extends AbstractCmdExecutor implements Com
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<WorldProperties> world = args.getOne("World");
-        Optional<Vector3d> location = args.getOne("Location");
+        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
+        Optional<Vector3d> location = args.getOne(CommandArgs.LOCATION);
 
         if (location.isPresent() && world.isPresent()) {
 

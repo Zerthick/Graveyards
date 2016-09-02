@@ -42,9 +42,9 @@ public class GraveyardSetDistanceExecutor extends AbstractCmdExecutor {
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<String> name = args.getOne("Name");
-        Optional<WorldProperties> world = args.getOne("World");
-        Optional<Integer> distance = args.getOne("Distance");
+        Optional<String> name = args.getOne(CommandArgs.NAME);
+        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
+        Optional<Integer> distance = args.getOne(CommandArgs.DISTANCE);
 
         if (name.isPresent() && distance.isPresent()) {
             if (world.isPresent()) {

@@ -43,8 +43,8 @@ public class GraveyardDestroyExecutor extends AbstractCmdExecutor implements Com
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<String> name = args.getOne("Name");
-        Optional<WorldProperties> world = args.getOne("World");
+        Optional<String> name = args.getOne(CommandArgs.NAME);
+        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
 
         if (name.isPresent()) {
             if (world.isPresent()) {

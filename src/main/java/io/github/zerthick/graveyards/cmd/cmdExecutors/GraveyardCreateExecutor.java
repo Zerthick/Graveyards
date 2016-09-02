@@ -45,10 +45,10 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<String> name = args.getOne("Name");
-        Optional<WorldProperties> world = args.getOne("World");
-        Optional<Vector3d> location = args.getOne("Location");
-        Optional<Vector3d> rotation = args.getOne("Rotation");
+        Optional<String> name = args.getOne(CommandArgs.NAME);
+        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
+        Optional<Vector3d> location = args.getOne(CommandArgs.LOCATION);
+        Optional<Vector3d> rotation = args.getOne(CommandArgs.ROTATION);
 
         if (name.isPresent()) {
             if (location.isPresent() && world.isPresent() && rotation.isPresent()) {

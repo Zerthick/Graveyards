@@ -40,7 +40,7 @@ public class GraveyardsManager {
      * @param graveyardMap the map of all the Graveyards
      */
     public GraveyardsManager(Map<UUID, Map<String, Graveyard>> graveyardMap) {
-        this.graveyardMap = graveyardMap;
+        this.graveyardMap = new HashMap<>(graveyardMap);
     }
 
     /**

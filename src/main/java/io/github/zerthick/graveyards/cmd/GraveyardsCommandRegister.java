@@ -47,11 +47,11 @@ public class GraveyardsCommandRegister {
                 .permission("graveyards.command.set.distance")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of("Name"))),
+                                .of(CommandArgs.NAME))),
                         GenericArguments.optional(GenericArguments.world(
-                                Text.of("World"))),
+                                Text.of(CommandArgs.WORLD))),
                         GenericArguments.onlyOne(
-                                GenericArguments.integer(Text.of("Distance"))
+                                GenericArguments.integer(Text.of(CommandArgs.DISTANCE))
                         ))
                 .executor(new GraveyardSetDistanceExecutor(container)).build();
 
@@ -64,11 +64,11 @@ public class GraveyardsCommandRegister {
                 .permission("graveyards.command.set.message")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of("Name"))),
+                                .of(CommandArgs.NAME))),
                         GenericArguments.optional(GenericArguments.world(
-                                Text.of("World"))),
+                                Text.of(CommandArgs.WORLD))),
                         GenericArguments.remainingJoinedStrings(
-                                Text.of("Message")
+                                Text.of(CommandArgs.MESSAGE)
                         ))
                 .executor(new GraveyardSetMessageExecutor(container)).build();
 
@@ -80,9 +80,9 @@ public class GraveyardsCommandRegister {
                 .permission("graveyards.command.teleport")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of("Name"))),
+                                .of(CommandArgs.NAME))),
                         GenericArguments.optional(GenericArguments.world(
-                                Text.of("World"))))
+                                Text.of(CommandArgs.WORLD))))
                 .executor(new GraveyardTeleportExecutor(container)).build();
 
         // gy nearest [World] [x, y, z]
@@ -93,9 +93,9 @@ public class GraveyardsCommandRegister {
                 .permission("graveyards.command.nearest")
                 .arguments(
                         GenericArguments.optional(GenericArguments.world(
-                                Text.of("World"))),
+                                Text.of(CommandArgs.WORLD))),
                         GenericArguments.optional(GenericArguments
-                                .vector3d(Text.of("Location"))))
+                                .vector3d(Text.of(CommandArgs.LOCATION))))
                 .executor(new GraveyardNearestExecutor(container)).build();
 
         // gy create <Name> [World] [x, y, z] [x, y, z]
@@ -106,12 +106,12 @@ public class GraveyardsCommandRegister {
                 .permission("graveyards.command.create")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of("Name"))),
+                                .of(CommandArgs.NAME))),
                         GenericArguments.optional(GenericArguments.world(
-                                Text.of("World"))),
+                                Text.of(CommandArgs.WORLD))),
                         GenericArguments.optional(GenericArguments
-                                .vector3d(Text.of("Location"))),
-                        GenericArguments.optional(GenericArguments.vector3d(Text.of("Rotation"))))
+                                .vector3d(Text.of(CommandArgs.LOCATION))),
+                        GenericArguments.optional(GenericArguments.vector3d(Text.of(CommandArgs.ROTATION))))
                 .executor(new GraveyardCreateExecutor(container)).build();
 
         // gy destroy <Name> [World]
@@ -122,9 +122,9 @@ public class GraveyardsCommandRegister {
                 .permission("graveyards.command.destroy")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of("Name"))),
+                                .of(CommandArgs.NAME))),
                         GenericArguments.optional(GenericArguments.world(
-                                Text.of("World"))))
+                                Text.of(CommandArgs.WORLD))))
                 .executor(new GraveyardDestroyExecutor(container)).build();
 
         // gy list [World]
@@ -136,7 +136,7 @@ public class GraveyardsCommandRegister {
                 .arguments(
                         GenericArguments.optional(GenericArguments
                                 .onlyOne(GenericArguments.world(
-                                        Text.of("World")))))
+                                        Text.of(CommandArgs.WORLD)))))
                 .executor(new GraveyardListExecutor(container)).build();
 
         // gy

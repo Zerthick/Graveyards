@@ -43,9 +43,9 @@ public class GraveyardSetMessageExecutor extends AbstractCmdExecutor {
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<String> name = args.getOne("Name");
-        Optional<WorldProperties> world = args.getOne("World");
-        Optional<String> message = args.getOne("Message");
+        Optional<String> name = args.getOne(CommandArgs.NAME);
+        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
+        Optional<String> message = args.getOne(CommandArgs.MESSAGE);
 
         if (name.isPresent() && message.isPresent()) {
             if (world.isPresent()) {

@@ -45,8 +45,8 @@ public class GraveyardTeleportExecutor extends AbstractCmdExecutor implements Co
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<String> name = args.getOne("Name");
-        Optional<WorldProperties> world = args.getOne("World");
+        Optional<String> name = args.getOne(CommandArgs.NAME);
+        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
 
         if (src instanceof Player) {
             Player player = (Player) src;

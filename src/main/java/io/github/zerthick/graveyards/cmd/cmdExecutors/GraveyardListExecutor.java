@@ -48,7 +48,7 @@ public class GraveyardListExecutor extends AbstractCmdExecutor implements Comman
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<WorldProperties> world = args.getOne("World");
+        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
 
         if (world.isPresent()) {
             List<Graveyard> graveyardList = manager.getGraveyardList(world.get().getUniqueId());
