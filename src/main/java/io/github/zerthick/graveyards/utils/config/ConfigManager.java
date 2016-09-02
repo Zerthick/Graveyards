@@ -63,7 +63,9 @@ public class ConfigManager {
                         .getValue(new TypeToken<Map<UUID, Map<String, Graveyard>>>() {
                         });
 
-                return new GraveyardsManager(graveyardsMap);
+                if(graveyardsMap != null) {
+                    return new GraveyardsManager(graveyardsMap);
+                }
             } catch (IOException e) {
                 logger.warn("Error loading graveyard data! Error:" + e.getMessage());
             } catch (ObjectMappingException e) {
