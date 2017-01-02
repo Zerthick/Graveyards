@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -27,11 +27,11 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 
 
-public class GraveyardsCommandRegister {
+public class CommandRegister {
 
     private PluginContainer container;
 
-    public GraveyardsCommandRegister(PluginContainer pluginContainer) {
+    public CommandRegister(PluginContainer pluginContainer) {
         super();
         container = pluginContainer;
     }
@@ -44,7 +44,7 @@ public class GraveyardsCommandRegister {
                 .description(
                         Text.of("Sets the discoverability distance of the graveyard with he given name at the provided world or your current world if none is provided.")
                 )
-                .permission("graveyards.command.set.distance")
+                .permission("graveyards.commands.set.distance")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of(CommandArgs.NAME))),
@@ -61,7 +61,7 @@ public class GraveyardsCommandRegister {
                 .description(
                         Text.of("Sets the welcome message of the graveyard with he given name at the provided world or your current world if none is provided.")
                 )
-                .permission("graveyards.command.set.message")
+                .permission("graveyards.commands.set.message")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of(CommandArgs.NAME))),
@@ -77,7 +77,7 @@ public class GraveyardsCommandRegister {
                 .builder()
                 .description(
                         Text.of("Teleports you to the graveyard with the given name at the provided world or your current world if none is provided."))
-                .permission("graveyards.command.teleport")
+                .permission("graveyards.commands.teleport")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of(CommandArgs.NAME))),
@@ -90,7 +90,7 @@ public class GraveyardsCommandRegister {
                 .builder()
                 .description(
                         Text.of("Identifies the nearest graveyard from the provided world and location or your current world and location if neither is provided."))
-                .permission("graveyards.command.nearest")
+                .permission("graveyards.commands.nearest")
                 .arguments(
                         GenericArguments.optional(GenericArguments.world(
                                 Text.of(CommandArgs.WORLD))),
@@ -103,7 +103,7 @@ public class GraveyardsCommandRegister {
                 .builder()
                 .description(
                         Text.of(" Creates a graveyard with the given name at the provided world, location and orientaiton, or your current world, location, and orientation if none are provided."))
-                .permission("graveyards.command.create")
+                .permission("graveyards.commands.create")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of(CommandArgs.NAME))),
@@ -119,7 +119,7 @@ public class GraveyardsCommandRegister {
                 .builder()
                 .description(
                         Text.of("Destroys a graveyard with the given name in the provided world or your current world if none is provided."))
-                .permission("graveyards.command.destroy")
+                .permission("graveyards.commands.destroy")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of(CommandArgs.NAME))),
@@ -132,7 +132,7 @@ public class GraveyardsCommandRegister {
                 .builder()
                 .description(
                         Text.of("Lists all graveyards in the provided world or your current world if none is provided."))
-                .permission("graveyards.command.list")
+                .permission("graveyards.commands.list")
                 .arguments(
                         GenericArguments.optional(GenericArguments
                                 .onlyOne(GenericArguments.world(
@@ -142,7 +142,7 @@ public class GraveyardsCommandRegister {
         // gy
         CommandSpec graveyardCommand = CommandSpec.builder()
                 .description(Text.of("/gy [list|create|destroy]"))
-                .permission("graveyards.command.help")
+                .permission("graveyards.commands.info")
                 .executor(new GraveyardExecutor(container))
                 .child(graveyardTeleportCommand, "teleport", "tp")
                 .child(graveyardNearestCommand, "nearest", "closest", "fd")

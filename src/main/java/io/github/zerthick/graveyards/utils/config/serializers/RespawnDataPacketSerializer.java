@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -26,10 +26,15 @@ import io.github.zerthick.graveyards.RespawnDataPacket;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
+import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class RespawnDataPacketSerializer implements TypeSerializer<RespawnDataPacket> {
+
+    public static void register() {
+        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(RespawnDataPacket.class), new RespawnDataPacketSerializer());
+    }
 
     @Override
     public RespawnDataPacket deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {

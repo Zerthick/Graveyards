@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -30,8 +30,6 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
-import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,19 +39,12 @@ import java.util.UUID;
 
 public class ConfigManager {
 
-    private Graveyards plugin;
-    private Logger logger;
-
-    public ConfigManager(Graveyards plugin) {
-        this.plugin = plugin;
-        logger = plugin.getLogger();
-
-        TypeSerializers.getDefaultSerializers()
-                .registerType(TypeToken.of(Graveyard.class), new GraveyardSerializer())
-                .registerType(TypeToken.of(RespawnDataPacket.class), new RespawnDataPacketSerializer());
+    public static void regsisterSerializers() {
+        GraveyardSerializer.register();
+        RespawnDataPacketSerializer.register();
     }
 
-    public GraveyardsManager loadGraveyards() {
+    public static GraveyardsManager loadGraveyards(Graveyards plugin) {
 
         File graveyardsFile = new File(plugin.getDefaultConfigDir().toFile(), "graveyardsData.config");
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(graveyardsFile).build();
@@ -69,17 +60,15 @@ public class ConfigManager {
                 if(graveyardsMap != null) {
                     return new GraveyardsManager(graveyardsMap);
                 }
-            } catch (IOException e) {
-                logger.warn("Error loading graveyard data! Error:" + e.getMessage());
-            } catch (ObjectMappingException e) {
-                logger.warn("Error mapping graveayrd data! Error:" + e.getMessage());
+            } catch (IOException | ObjectMappingException e) {
+                plugin.getLogger().error("Error loading graveyard data! Error:" + e.getMessage());
             }
         }
         return new GraveyardsManager(new HashMap<>());
     }
 
+    public static void saveGraveyards(Graveyards plugin) {
 
-    public void saveGraveyards() {
         File graveyardsFile = new File(plugin.getDefaultConfigDir().toFile(), "graveyardsData.config");
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(graveyardsFile).build();
 
@@ -92,11 +81,11 @@ public class ConfigManager {
 
             loader.save(graveyardsData);
         } catch (IOException | ObjectMappingException e) {
-            logger.warn("Error saving graveyard data! Error:" + e.getMessage());
+            plugin.getLogger().error("Error saving graveyard data! Error:" + e.getMessage());
         }
     }
 
-    public void loadConfigValues() {
+    public static void loadConfigValues(Graveyards plugin) {
 
         ConfigurationLoader<CommentedConfigurationNode> loader = plugin.getConfigLoader();
 
@@ -112,14 +101,12 @@ public class ConfigManager {
 
             ConfigValues.getInstance().setDefaultGraveyardMessage(graveyardsConfig.getNode("defaultMessage").getString());
 
-        } catch (IOException e) {
-            logger.warn("Error loading graveyard config! Error:" + e.getMessage());
-        } catch (ObjectMappingException e) {
-            logger.warn("Error mapping graveyard config! Error:" + e.getMessage());
+        } catch (IOException | ObjectMappingException e) {
+            plugin.getLogger().error("Error loading graveyard config! Error:" + e.getMessage());
         }
     }
 
-    public Map<UUID, RespawnDataPacket> loadRespawnPackets() {
+    public static Map<UUID, RespawnDataPacket> loadRespawnPackets(Graveyards plugin) {
 
         File respawnDataFile = new File(plugin.getDefaultConfigDir().toFile(), "respawnData.config");
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(respawnDataFile).build();
@@ -135,16 +122,14 @@ public class ConfigManager {
                 if (respawnDataMap != null) {
                     return respawnDataMap;
                 }
-            } catch (IOException e) {
-                logger.warn("Error loading respawn data! Error:" + e.getMessage());
-            } catch (ObjectMappingException e) {
-                logger.warn("Error mapping respawn data! Error:" + e.getMessage());
+            } catch (IOException | ObjectMappingException e) {
+                plugin.getLogger().error("Error loading respawn data! Error:" + e.getMessage());
             }
         }
         return new HashMap<>();
     }
 
-    public void saveRespawnPackets() {
+    public static void saveRespawnPackets(Graveyards plugin) {
 
         File respawnDataFile = new File(plugin.getDefaultConfigDir().toFile(), "respawnData.config");
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(respawnDataFile).build();
@@ -158,7 +143,7 @@ public class ConfigManager {
 
             loader.save(respawnData);
         } catch (IOException | ObjectMappingException e) {
-            logger.warn("Error saving respawn data! Error:" + e.getMessage());
+            plugin.getLogger().error("Error saving respawn data! Error:" + e.getMessage());
         }
     }
 }

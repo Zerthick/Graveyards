@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -20,7 +20,7 @@
 package io.github.zerthick.graveyards;
 
 import com.google.inject.Inject;
-import io.github.zerthick.graveyards.cmd.GraveyardsCommandRegister;
+import io.github.zerthick.graveyards.cmd.CommandRegister;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
 import io.github.zerthick.graveyards.graveyard.GraveyardsManager;
 import io.github.zerthick.graveyards.utils.config.ConfigManager;
@@ -48,12 +48,11 @@ import java.util.UUID;
 
 @Plugin(id = "graveyards",
         name = "Graveyards",
-        version = "2.1.2",
+        version = "2.1.3",
         description = "A player spawn-point plugin.")
 public class Graveyards {
 
     private GraveyardsManager graveyardsManager;
-    private ConfigManager configManager;
     private Map<UUID, RespawnDataPacket> respawnDataPackets;
 
     @Inject
@@ -101,24 +100,24 @@ public class Graveyards {
     @Listener
     public void onGameInit(GameInitializationEvent event) {
 
-        //Set up config manager
-        configManager = new ConfigManager(this);
+        // Register Config Serializers
+        ConfigManager.regsisterSerializers();
 
         // Load graveyards from file
-        graveyardsManager = configManager.loadGraveyards();
+        graveyardsManager = ConfigManager.loadGraveyards(this);
 
         // Load config values from file
-        configManager.loadConfigValues();
+        ConfigManager.loadConfigValues(this);
 
         // Load respawn data from file
-        respawnDataPackets = configManager.loadRespawnPackets();
+        respawnDataPackets = ConfigManager.loadRespawnPackets(this);
     }
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
 
         // Register Commands
-        GraveyardsCommandRegister commandRegister = new GraveyardsCommandRegister(
+        CommandRegister commandRegister = new CommandRegister(
                 instance);
         commandRegister.registerCmds();
 
@@ -155,10 +154,10 @@ public class Graveyards {
     public void onServerStop(GameStoppedServerEvent event) {
 
         // Save graveyards to file
-        configManager.saveGraveyards();
+        ConfigManager.saveGraveyards(this);
 
         // Save respawn data to file
-        configManager.saveRespawnPackets();
+        ConfigManager.saveRespawnPackets(this);
     }
 
     public Map<UUID, RespawnDataPacket> getRespawnDataPacketMap() {
