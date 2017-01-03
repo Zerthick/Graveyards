@@ -49,7 +49,11 @@ import java.util.UUID;
 @Plugin(id = "graveyards",
         name = "Graveyards",
         version = "2.1.3",
-        description = "A player spawn-point plugin.")
+        description = "A player spawn-point plugin.",
+        authors = {
+                "Zerthick"
+        }
+)
 public class Graveyards {
 
     private GraveyardsManager graveyardsManager;
