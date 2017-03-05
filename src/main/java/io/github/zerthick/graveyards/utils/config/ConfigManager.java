@@ -23,7 +23,9 @@ import com.google.common.reflect.TypeToken;
 import io.github.zerthick.graveyards.Graveyards;
 import io.github.zerthick.graveyards.RespawnDataPacket;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
-import io.github.zerthick.graveyards.graveyard.GraveyardsManager;
+import io.github.zerthick.graveyards.graveyard.GraveyardGroup;
+import io.github.zerthick.graveyards.graveyard.GraveyardGroupManager;
+import io.github.zerthick.graveyards.utils.config.serializers.GraveyardGroupSerializer;
 import io.github.zerthick.graveyards.utils.config.serializers.GraveyardSerializer;
 import io.github.zerthick.graveyards.utils.config.serializers.RespawnDataPacketSerializer;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -42,13 +44,16 @@ public class ConfigManager {
     public static void regsisterSerializers() {
         GraveyardSerializer.register();
         RespawnDataPacketSerializer.register();
+        GraveyardGroupSerializer.register();
     }
 
-    public static GraveyardsManager loadGraveyards(Graveyards plugin) {
+    public static GraveyardGroupManager loadGraveyards(Graveyards plugin) {
 
+        //Load old file if it exists
         File graveyardsFile = new File(plugin.getDefaultConfigDir().toFile(), "graveyardsData.config");
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(graveyardsFile).build();
 
+        //Convert old data over to new format
         if (graveyardsFile.exists()) {
             try {
                 CommentedConfigurationNode graveyardsData = loader.load();
@@ -58,26 +63,52 @@ public class ConfigManager {
                         });
 
                 if(graveyardsMap != null) {
-                    return new GraveyardsManager(graveyardsMap);
+                    GraveyardGroupManager groupManager = new GraveyardGroupManager(new HashMap<>());
+                    groupManager.addGraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP, new GraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP, graveyardsMap));
+                    graveyardsFile.renameTo(new File(plugin.getDefaultConfigDir().toFile(), "graveyardsData.conf"));
+                    return groupManager;
                 }
             } catch (IOException | ObjectMappingException e) {
                 plugin.getLogger().error("Error loading graveyard data! Error:" + e.getMessage());
             }
+        } else {
+
+            //Load new file
+            graveyardsFile = new File(plugin.getDefaultConfigDir().toFile(), "graveyardsData.conf");
+            loader = HoconConfigurationLoader.builder().setFile(graveyardsFile).build();
+
+            if (graveyardsFile.exists()) {
+                try {
+                    CommentedConfigurationNode graveyardGroupData = loader.load();
+
+                    Map<String, GraveyardGroup> graveyardGroupMap = graveyardGroupData
+                            .getValue(new TypeToken<Map<String, GraveyardGroup>>() {
+                            });
+
+                    if (graveyardGroupMap != null) {
+                        return new GraveyardGroupManager(graveyardGroupMap);
+                    }
+                } catch (IOException | ObjectMappingException e) {
+                    plugin.getLogger().error("Error loading graveyard data! Error:" + e.getMessage());
+                }
+            }
         }
-        return new GraveyardsManager(new HashMap<>());
+        GraveyardGroupManager defaultManager = new GraveyardGroupManager(new HashMap<>());
+        defaultManager.addGraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP, new GraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP, new HashMap<>()));
+        return defaultManager;
     }
 
     public static void saveGraveyards(Graveyards plugin) {
 
-        File graveyardsFile = new File(plugin.getDefaultConfigDir().toFile(), "graveyardsData.config");
+        File graveyardsFile = new File(plugin.getDefaultConfigDir().toFile(), "graveyardsData.conf");
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(graveyardsFile).build();
 
         try {
             CommentedConfigurationNode graveyardsData = loader.load();
 
-            graveyardsData.setValue(new TypeToken<Map<UUID, Map<String, Graveyard>>>() {
+            graveyardsData.setValue(new TypeToken<Map<String, GraveyardGroup>>() {
                                     },
-                    plugin.getGraveyardsManager().getGraveyardMap());
+                    plugin.getGraveyardGroupManager().getGraveyardGroupMap());
 
             loader.save(graveyardsData);
         } catch (IOException | ObjectMappingException e) {
@@ -108,7 +139,13 @@ public class ConfigManager {
 
     public static Map<UUID, RespawnDataPacket> loadRespawnPackets(Graveyards plugin) {
 
+        //Rename old file if it exists
         File respawnDataFile = new File(plugin.getDefaultConfigDir().toFile(), "respawnData.config");
+        if (respawnDataFile.exists()) {
+            respawnDataFile.renameTo(new File(plugin.getDefaultConfigDir().toFile(), "respawnData.conf"));
+        }
+
+        respawnDataFile = new File(plugin.getDefaultConfigDir().toFile(), "respawnData.conf");
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(respawnDataFile).build();
 
         if (respawnDataFile.exists()) {
@@ -131,7 +168,7 @@ public class ConfigManager {
 
     public static void saveRespawnPackets(Graveyards plugin) {
 
-        File respawnDataFile = new File(plugin.getDefaultConfigDir().toFile(), "respawnData.config");
+        File respawnDataFile = new File(plugin.getDefaultConfigDir().toFile(), "respawnData.conf");
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(respawnDataFile).build();
 
         try {
