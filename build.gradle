@@ -42,5 +42,5 @@ spongestart{
 }
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:6.0.0-SNAPSHOT'
+    compile 'org.spongepowered:spongeapi:5.1.0'
 }
