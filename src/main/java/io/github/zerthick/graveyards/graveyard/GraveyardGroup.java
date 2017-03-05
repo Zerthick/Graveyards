@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -27,26 +27,28 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Manager Class for Holding All Graveyards
+ * Manager Class for Holding All Graveyards in a Group
  */
-public class GraveyardsManager {
+public class GraveyardGroup {
 
     // Map of all graveyards, Graveyards are first keyed by World UUID then Name.
     private Map<UUID, Map<String, Graveyard>> graveyardMap;
+    private String groupName;
 
     /**
-     * Instantiates the GraveyardManager with the given Graveyard Data
+     * Instantiates the GraveyardGroup with the given Graveyard Data
      *
-     * @param graveyardMap the map of all the Graveyards
+     * @param graveyardMap the map of all the Graveyards in this Group
      */
-    public GraveyardsManager(Map<UUID, Map<String, Graveyard>> graveyardMap) {
+    public GraveyardGroup(String groupName, Map<UUID, Map<String, Graveyard>> graveyardMap) {
         this.graveyardMap = new HashMap<>(graveyardMap);
+        this.groupName = groupName;
     }
 
     /**
-     * Returns the map of all the Graveyards, used to serialize all graveyard data to a file
+     * Returns the map of all the Graveyards in this Group, used to serialize all graveyard data to a file
      *
-     * @return the map of all the Graveyards
+     * @return the map of all the Graveyards in this Group
      */
     public Map<UUID, Map<String, Graveyard>> getGraveyardMap() {
         return graveyardMap;
@@ -124,6 +126,14 @@ public class GraveyardsManager {
     public Optional<Graveyard> findNearestGraveyard(Vector3i location, UUID worldUUID) {
 
         return getGraveyardList(worldUUID).stream()
-                .min((g1, g2) -> Integer.compare(location.distanceSquared(g1.getLocation()), location.distanceSquared(g2.getLocation())));
+                .min(Comparator.comparingInt(g -> location.distanceSquared(g.getLocation())));
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public String getGroupNameCleaned() {
+        return groupName.toLowerCase().replaceAll("\\s+", "");
     }
 }

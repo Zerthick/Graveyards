@@ -19,6 +19,7 @@
 
 package io.github.zerthick.graveyards.cmd;
 
+import io.github.zerthick.graveyards.Graveyards;
 import io.github.zerthick.graveyards.cmd.cmdExecutors.*;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -29,33 +30,17 @@ import org.spongepowered.api.text.Text;
 
 public class CommandRegister {
 
+    private Graveyards plugin;
     private PluginContainer container;
 
-    public CommandRegister(PluginContainer pluginContainer) {
-        super();
-        container = pluginContainer;
+    public CommandRegister(Graveyards plugin) {
+        this.plugin = plugin;
+        container = plugin.getInstance();
     }
 
     public void registerCmds() {
 
-        // gy setDistance <Name> [World] <Distance>
-        CommandSpec graveyardSetDistanceCommand = CommandSpec
-                .builder()
-                .description(
-                        Text.of("Sets the discoverability distance of the graveyard with he given name at the provided world or your current world if none is provided.")
-                )
-                .permission("graveyards.commands.set.distance")
-                .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of(CommandArgs.NAME))),
-                        GenericArguments.optional(GenericArguments.world(
-                                Text.of(CommandArgs.WORLD))),
-                        GenericArguments.onlyOne(
-                                GenericArguments.integer(Text.of(CommandArgs.DISTANCE))
-                        ))
-                .executor(new GraveyardSetDistanceExecutor(container)).build();
-
-        // gy setMessage <Name> [World] <Message>
+        // gy setMessage <Name> [Group] [World] <Message>
         CommandSpec graveyardSetMessageCommand = CommandSpec
                 .builder()
                 .description(
@@ -65,14 +50,16 @@ public class CommandRegister {
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of(CommandArgs.NAME))),
-                        GenericArguments.optional(GenericArguments.world(
+                        GenericArguments.optionalWeak(GenericArguments.choices(
+                                CommandArgs.GROUP, plugin.getGraveyardGroupManager().getGraveyardGroupMap())),
+                        GenericArguments.optionalWeak(GenericArguments.world(
                                 Text.of(CommandArgs.WORLD))),
                         GenericArguments.remainingJoinedStrings(
                                 Text.of(CommandArgs.MESSAGE)
                         ))
                 .executor(new GraveyardSetMessageExecutor(container)).build();
 
-        // gy tp <Name> [World]
+        // gy tp <Name> [Group] [World]
         CommandSpec graveyardTeleportCommand = CommandSpec
                 .builder()
                 .description(
@@ -81,24 +68,28 @@ public class CommandRegister {
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of(CommandArgs.NAME))),
-                        GenericArguments.optional(GenericArguments.world(
+                        GenericArguments.optional(GenericArguments.choices(
+                                CommandArgs.GROUP, plugin.getGraveyardGroupManager().getGraveyardGroupMap())),
+                        GenericArguments.optionalWeak(GenericArguments.world(
                                 Text.of(CommandArgs.WORLD))))
                 .executor(new GraveyardTeleportExecutor(container)).build();
 
-        // gy nearest [World] [x, y, z]
+        // gy nearest [Group] [World] [x, y, z]
         CommandSpec graveyardNearestCommand = CommandSpec
                 .builder()
                 .description(
                         Text.of("Identifies the nearest graveyard from the provided world and location or your current world and location if neither is provided."))
                 .permission("graveyards.commands.nearest")
                 .arguments(
-                        GenericArguments.optional(GenericArguments.world(
+                        GenericArguments.optional(GenericArguments.choices(
+                                CommandArgs.GROUP, plugin.getGraveyardGroupManager().getGraveyardGroupMap())),
+                        GenericArguments.optionalWeak(GenericArguments.world(
                                 Text.of(CommandArgs.WORLD))),
                         GenericArguments.optional(GenericArguments
                                 .vector3d(Text.of(CommandArgs.LOCATION))))
                 .executor(new GraveyardNearestExecutor(container)).build();
 
-        // gy create <Name> [World] [x, y, z] [x, y, z]
+        // gy create <Name> [Group] [World] [x, y, z] [x, y, z]
         CommandSpec graveyardCreateCommand = CommandSpec
                 .builder()
                 .description(
@@ -107,14 +98,16 @@ public class CommandRegister {
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of(CommandArgs.NAME))),
-                        GenericArguments.optional(GenericArguments.world(
+                        GenericArguments.optional(GenericArguments.choices(
+                                CommandArgs.GROUP, plugin.getGraveyardGroupManager().getGraveyardGroupMap())),
+                        GenericArguments.optionalWeak(GenericArguments.world(
                                 Text.of(CommandArgs.WORLD))),
                         GenericArguments.optional(GenericArguments
                                 .vector3d(Text.of(CommandArgs.LOCATION))),
                         GenericArguments.optional(GenericArguments.vector3d(Text.of(CommandArgs.ROTATION))))
                 .executor(new GraveyardCreateExecutor(container)).build();
 
-        // gy destroy <Name> [World]
+        // gy destroy <Name> [Group] [World]
         CommandSpec graveyardDestroyCommand = CommandSpec
                 .builder()
                 .description(
@@ -123,7 +116,9 @@ public class CommandRegister {
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(Text
                                 .of(CommandArgs.NAME))),
-                        GenericArguments.optional(GenericArguments.world(
+                        GenericArguments.optional(GenericArguments.choices(
+                                CommandArgs.GROUP, plugin.getGraveyardGroupManager().getGraveyardGroupMap())),
+                        GenericArguments.optionalWeak(GenericArguments.world(
                                 Text.of(CommandArgs.WORLD))))
                 .executor(new GraveyardDestroyExecutor(container)).build();
 
@@ -150,7 +145,6 @@ public class CommandRegister {
                 .child(graveyardDestroyCommand, "destroy", "remove", "rm")
                 .child(graveyardListCommand, "list", "ls")
                 .child(graveyardSetMessageCommand, "setMessage", "sm")
-                //.child(graveyardSetDistanceCommand, "setDistance", "sd")
                 .build();
         Sponge.getGame().getCommandManager().register(container.getInstance().get(),
                 graveyardCommand, "graveyard", "gy");

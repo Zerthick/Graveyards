@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -19,7 +19,9 @@
 
 package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
+import io.github.zerthick.graveyards.Graveyards;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
+import io.github.zerthick.graveyards.graveyard.GraveyardGroup;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -43,34 +45,34 @@ public class GraveyardSetMessageExecutor extends AbstractCmdExecutor {
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<String> name = args.getOne(CommandArgs.NAME);
-        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
-        Optional<String> message = args.getOne(CommandArgs.MESSAGE);
+        Optional<String> nameOptional = args.getOne(CommandArgs.NAME);
+        Optional<GraveyardGroup> graveyardGroupOptional = args.getOne(CommandArgs.GROUP);
+        Optional<WorldProperties> worldOptional = args.getOne(CommandArgs.WORLD);
+        Optional<String> messageOptional = args.getOne(CommandArgs.MESSAGE);
 
-        if (name.isPresent() && message.isPresent()) {
-            if (world.isPresent()) {
+        if (nameOptional.isPresent() && messageOptional.isPresent()) {
 
-                Optional<Graveyard> graveyardOptional = manager.getGraveyard(name.get(), world.get().getUniqueId());
-
-                if (graveyardOptional.isPresent()) {
-                    graveyardOptional.get().setMessage(TextSerializers.FORMATTING_CODE.deserialize(message.get()));
-                    src.sendMessage(successMessageBuilder(name.get(), world.get()));
-                } else {
-                    src.sendMessage(failureMessageBuilder(name.get(), world.get()));
-                }
-
-                return CommandResult.success();
+            GraveyardGroup graveyardGroup = manager.getGraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP).get();
+            if (graveyardGroupOptional.isPresent()) {
+                graveyardGroup = graveyardGroupOptional.get();
             }
-            if (src instanceof Player) {
-                Player player = (Player) src;
 
-                Optional<Graveyard> graveyardOptional = manager.getGraveyard(name.get(), player.getWorld().getUniqueId());
+            WorldProperties world = null;
+            if (worldOptional.isPresent()) {
+                world = worldOptional.get();
+            } else if (src instanceof Player) {
+                world = ((Player) src).getWorld().getProperties();
+            }
+
+            if (world != null) {
+
+                Optional<Graveyard> graveyardOptional = graveyardGroup.getGraveyard(nameOptional.get(), world.getUniqueId());
 
                 if (graveyardOptional.isPresent()) {
-                    graveyardOptional.get().setMessage(TextSerializers.FORMATTING_CODE.deserialize(message.get()));
-                    src.sendMessage(successMessageBuilder(name.get(), player.getWorld().getProperties()));
+                    graveyardOptional.get().setMessage(TextSerializers.FORMATTING_CODE.deserialize(messageOptional.get()));
+                    src.sendMessage(successMessageBuilder(nameOptional.get(), world, graveyardGroup.getGroupName()));
                 } else {
-                    player.sendMessage(failureMessageBuilder(name.get(), player.getWorld().getProperties()));
+                    src.sendMessage(failureMessageBuilder(nameOptional.get(), world, graveyardGroup.getGroupName()));
                 }
 
                 return CommandResult.success();
@@ -82,18 +84,19 @@ public class GraveyardSetMessageExecutor extends AbstractCmdExecutor {
         return CommandResult.empty();
     }
 
-    private Text successMessageBuilder(String name, WorldProperties world) {
+    private Text successMessageBuilder(String name, WorldProperties world, String groupName) {
 
         return Text.of(TextColors.GREEN, "Successfully set message of Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
-                TextColors.DARK_GREEN, world.getWorldName());
+                TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
+                " in group ", TextColors.DARK_GREEN, groupName, TextColors.GREEN, ".");
     }
 
-    private Text failureMessageBuilder(String name, WorldProperties world) {
+    private Text failureMessageBuilder(String name, WorldProperties world, String groupName) {
 
         return Text.of(TextColors.GREEN, "There is no graveyard  ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
-                "!");
+                " in group ", TextColors.DARK_GREEN, groupName, TextColors.GREEN, "!");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -29,4 +29,5 @@ public class CommandArgs {
     public static final LiteralText ROTATION = Text.of("Rotation");
     public static final LiteralText DISTANCE = Text.of("Distance");
     public static final LiteralText MESSAGE = Text.of("Message");
+    public static final LiteralText GROUP = Text.of("Group");
 }

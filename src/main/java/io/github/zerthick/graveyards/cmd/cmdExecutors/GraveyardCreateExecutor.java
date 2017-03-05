@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -20,6 +20,9 @@
 package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
+import io.github.zerthick.graveyards.Graveyards;
+import io.github.zerthick.graveyards.graveyard.GraveyardGroup;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -32,7 +35,6 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public class GraveyardCreateExecutor extends AbstractCmdExecutor implements CommandExecutor {
 
@@ -45,36 +47,50 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<String> name = args.getOne(CommandArgs.NAME);
-        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
-        Optional<Vector3d> location = args.getOne(CommandArgs.LOCATION);
-        Optional<Vector3d> rotation = args.getOne(CommandArgs.ROTATION);
+        Optional<String> nameOptional = args.getOne(CommandArgs.NAME);
+        Optional<GraveyardGroup> graveyardGroupOptional = args.getOne(CommandArgs.GROUP);
+        Optional<WorldProperties> worldOptional = args.getOne(CommandArgs.WORLD);
+        Optional<Vector3d> locationOptional = args.getOne(CommandArgs.LOCATION);
+        Optional<Vector3d> rotationOptional = args.getOne(CommandArgs.ROTATION);
 
-        if (name.isPresent()) {
-            if (location.isPresent() && world.isPresent() && rotation.isPresent()) {
 
-                String graveyardName = name.get();
-                UUID worldUUID = world.get().getUniqueId();
+        if (nameOptional.isPresent()) {
 
-                if(!manager.exists(graveyardName, worldUUID)) {
-                    manager.addGraveyard(graveyardName, location.get().toInt(), rotation.get(), worldUUID);
-                    src.sendMessage(successMessageBuilder(graveyardName, world.get(), location.get(), rotation.get()));
-                } else {
-                    src.sendMessage(failureMessageBuilder(graveyardName, world.get()));
-                }
-                return CommandResult.success();
+            GraveyardGroup graveyardGroup = manager.getGraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP).get();
+            if (graveyardGroupOptional.isPresent()) {
+                graveyardGroup = graveyardGroupOptional.get();
             }
-            if (src instanceof Player) {
-                Player player = (Player) src;
 
-                String graveyardName = name.get();
-                UUID worldUUID = player.getWorld().getUniqueId();
+            WorldProperties world = null;
+            if (worldOptional.isPresent()) {
+                world = worldOptional.get();
+            } else if (src instanceof Player) {
+                world = ((Player) src).getWorld().getProperties();
+            }
 
-                if(!manager.exists(graveyardName, worldUUID)) {
-                    manager.addGraveyard(graveyardName, player.getLocation().getBlockPosition(), player.getRotation(), worldUUID);
-                    src.sendMessage(successMessageBuilder(graveyardName, player.getWorld().getProperties(), player.getLocation().getPosition(), player.getRotation()));
+            Vector3i location = null;
+            if (locationOptional.isPresent()) {
+                location = locationOptional.get().toInt();
+            } else if (src instanceof Player) {
+                location = ((Player) src).getLocation().getBlockPosition();
+            }
+
+            Vector3d rotation = null;
+            if (rotationOptional.isPresent()) {
+                rotation = rotationOptional.get();
+            } else if (src instanceof Player) {
+                rotation = ((Player) src).getRotation();
+            }
+
+            if (world != null && location != null && rotation != null) {
+
+                String graveyardName = nameOptional.get();
+
+                if (!graveyardGroup.exists(graveyardName, world.getUniqueId())) {
+                    graveyardGroup.addGraveyard(graveyardName, location, rotation, world.getUniqueId());
+                    src.sendMessage(successMessageBuilder(graveyardName, world, location, rotation, graveyardGroup.getGroupName()));
                 } else {
-                    src.sendMessage(failureMessageBuilder(graveyardName, player.getWorld().getProperties()));
+                    src.sendMessage(failureMessageBuilder(graveyardName, world, graveyardGroup.getGroupName()));
                 }
                 return CommandResult.success();
             }
@@ -88,20 +104,22 @@ public class GraveyardCreateExecutor extends AbstractCmdExecutor implements Comm
     }
 
     private Text successMessageBuilder(String name, WorldProperties world,
-                                       Vector3d location, Vector3d rotation) {
+                                       Vector3i location, Vector3d rotation, String groupName) {
 
         return Text.of(TextColors.GREEN, "Created Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
-                " at Location ", TextColors.DARK_GREEN, location.toInt().toString(),
-                TextColors.GREEN, " with rotation ", TextColors.DARK_GREEN, rotation);
+                " at Location ", TextColors.DARK_GREEN, location.toString(),
+                TextColors.GREEN, " with rotation ", TextColors.DARK_GREEN, rotation,
+                TextColors.GREEN, " in Group ", TextColors.DARK_GREEN, groupName);
     }
 
-    private Text failureMessageBuilder(String name, WorldProperties world) {
+    private Text failureMessageBuilder(String name, WorldProperties world, String groupName) {
 
         return Text.of(TextColors.GREEN, "Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
+                " in Group ", TextColors.DARK_GREEN, groupName, TextColors.GREEN,
                 " already exists!");
     }
 }

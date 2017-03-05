@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -21,7 +21,9 @@ package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
+import io.github.zerthick.graveyards.Graveyards;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
+import io.github.zerthick.graveyards.graveyard.GraveyardGroup;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -45,31 +47,45 @@ public class GraveyardNearestExecutor extends AbstractCmdExecutor implements Com
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
-        Optional<Vector3d> location = args.getOne(CommandArgs.LOCATION);
+        Optional<GraveyardGroup> graveyardGroupOptional = args.getOne(CommandArgs.GROUP);
+        Optional<WorldProperties> worldOptional = args.getOne(CommandArgs.WORLD);
+        Optional<Vector3d> locationOptional = args.getOne(CommandArgs.LOCATION);
 
-        if (location.isPresent() && world.isPresent()) {
-
-            Optional<Graveyard> nearestGraveyardOptional = manager.findNearestGraveyard(location.get().toInt(), world.get().getUniqueId());
-            if (nearestGraveyardOptional.isPresent()) {
-                Graveyard nearestGraveyard = nearestGraveyardOptional.get();
-                src.sendMessage(successMessageBuilder(world.get(), nearestGraveyard.getName(), nearestGraveyard.getLocation()));
-            } else {
-                src.sendMessage(failureMessageBuilder(world.get()));
-            }
-            return CommandResult.success();
+        GraveyardGroup graveyardGroup = manager.getGraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP).get();
+        if (graveyardGroupOptional.isPresent()) {
+            graveyardGroup = graveyardGroupOptional.get();
         }
-        if (src instanceof Player) {
-            Player player = (Player) src;
 
-            Optional<Graveyard> nearestGraveyardOptional = manager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
+        WorldProperties world = null;
+        if (worldOptional.isPresent()) {
+            world = worldOptional.get();
+        } else if (src instanceof Player) {
+            world = ((Player) src).getWorld().getProperties();
+        }
+
+        Vector3i location = null;
+        if (locationOptional.isPresent()) {
+            location = locationOptional.get().toInt();
+        } else if (src instanceof Player) {
+            location = ((Player) src).getLocation().getBlockPosition();
+        }
+
+        if (location != null && world != null) {
+
+            Optional<Graveyard> nearestGraveyardOptional;
+            if (graveyardGroup.getGroupName() != Graveyards.DEFAULT_GRAVEYARD_GROUP) {
+                GraveyardGroup finalGraveyardGroup = graveyardGroup;
+                nearestGraveyardOptional = manager
+                        .findNearestGraveyardWithFilter(location, world.getUniqueId(), e -> e.getKey().equals(finalGraveyardGroup.getGroupNameCleaned()));
+            } else {
+                nearestGraveyardOptional = manager.findNearestGraveyard(location, world.getUniqueId());
+            }
             if (nearestGraveyardOptional.isPresent()) {
                 Graveyard nearestGraveyard = nearestGraveyardOptional.get();
-                src.sendMessage(successMessageBuilder(player.getWorld().getProperties(), nearestGraveyard.getName(), nearestGraveyard.getLocation()));
+                src.sendMessage(successMessageBuilder(world, nearestGraveyard.getName(), nearestGraveyard.getLocation(), graveyardGroup.getGroupName()));
             } else {
-                src.sendMessage(failureMessageBuilder(player.getWorld().getProperties()));
+                src.sendMessage(failureMessageBuilder(world, graveyardGroup.getGroupName()));
             }
-
             return CommandResult.success();
         }
 
@@ -79,17 +95,19 @@ public class GraveyardNearestExecutor extends AbstractCmdExecutor implements Com
         return CommandResult.empty();
     }
 
-    private Text successMessageBuilder(WorldProperties world, String name, Vector3i location) {
+    private Text successMessageBuilder(WorldProperties world, String name, Vector3i location, String groupName) {
 
         return Text.of(TextColors.GREEN, "The nearest Graveyard in World ",
-                TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN, " is Graveyard ",
+                TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
+                "in Group ", TextColors.DARK_GREEN, groupName, TextColors.GREEN, " is Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " at Location ", TextColors.DARK_GREEN, location.toString());
     }
 
-    private Text failureMessageBuilder(WorldProperties world) {
+    private Text failureMessageBuilder(WorldProperties world, String groupName) {
 
         return Text.of(TextColors.GREEN,
                 "There are no graveyards in World ",
-                TextColors.DARK_GREEN, world.getWorldName());
+                TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
+                " in Group ", TextColors.DARK_GREEN, groupName, TextColors.GREEN, ".");
     }
 }

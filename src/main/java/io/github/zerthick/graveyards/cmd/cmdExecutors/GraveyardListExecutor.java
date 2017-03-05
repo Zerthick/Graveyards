@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -21,6 +21,7 @@ package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
 import io.github.zerthick.graveyards.Graveyards;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
+import io.github.zerthick.graveyards.graveyard.GraveyardGroup;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -34,8 +35,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.storage.WorldProperties;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GraveyardListExecutor extends AbstractCmdExecutor implements CommandExecutor {
@@ -48,28 +48,34 @@ public class GraveyardListExecutor extends AbstractCmdExecutor implements Comman
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
+        Optional<WorldProperties> worldOptional = args.getOne(CommandArgs.WORLD);
 
-        if (world.isPresent()) {
-            List<Graveyard> graveyardList = manager.getGraveyardList(world.get().getUniqueId());
-            if (!graveyardList.isEmpty()) {
-                listBuilder(world.get(), graveyardList, plugin).sendTo(src);
-            } else {
-                src.sendMessage(Text.of(TextColors.GREEN,
-                        "There are no graveyards in World ",
-                        TextColors.DARK_GREEN, world.get().getWorldName()));
-            }
-            return CommandResult.success();
-        }
-        if (src instanceof Player) {
+        WorldProperties world = null;
+
+        if (worldOptional.isPresent()) {
+            world = worldOptional.get();
+        } else if (src instanceof Player) {
             Player player = (Player) src;
-            List<Graveyard> graveyardList = manager.getGraveyardList(player.getWorld().getUniqueId());
-            if (!graveyardList.isEmpty()) {
-                listBuilder(player.getWorld().getProperties(), graveyardList, plugin).sendTo(src);
+            world = player.getWorld().getProperties();
+        }
+
+        if (world != null) {
+            Map<String, GraveyardGroup> graveyardGroups = manager.getGraveyardGroupMap();
+            Map<String, List<Graveyard>> applicableGraveyards = new HashMap<>();
+            UUID finalWorldUUID = world.getUniqueId();
+            graveyardGroups.forEach((name, group) -> {
+                List<Graveyard> graveyardList = group.getGraveyardList(finalWorldUUID);
+                if (!graveyardList.isEmpty()) {
+                    applicableGraveyards.put(name, graveyardList);
+                }
+            });
+
+            if (!applicableGraveyards.isEmpty()) {
+                listBuilder(world, applicableGraveyards, plugin).sendTo(src);
             } else {
                 src.sendMessage(Text.of(TextColors.GREEN,
                         "There are no graveyards in World ",
-                        TextColors.DARK_GREEN, player.getWorld().getName()));
+                        TextColors.DARK_GREEN, world.getWorldName()));
             }
             return CommandResult.success();
         }
@@ -78,10 +84,14 @@ public class GraveyardListExecutor extends AbstractCmdExecutor implements Comman
     }
 
     private PaginationList.Builder listBuilder(WorldProperties world,
-                                               List<Graveyard> graveyardList, Graveyards plugin) {
+                                               Map<String, List<Graveyard>> graveyardMap, Graveyards plugin) {
 
-        List<Text> graveyardInfo = graveyardList.stream().map(graveyard -> Text.of(graveyard.getName(), ": ",
-                graveyard.getLocation().toString())).collect(Collectors.toList());
+        List<Text> graveyardInfo = new ArrayList<>();
+        graveyardMap.forEach((name, list) -> {
+            graveyardInfo.add(Text.of(TextColors.GREEN, name, ":"));
+            graveyardInfo.addAll(list.stream().map(graveyard -> Text.of("  ", graveyard.getName(), ": ",
+                    graveyard.getLocation().toString())).collect(Collectors.toList()));
+        });
 
         PaginationService pagServ = plugin.getGame().getServiceManager().provide(PaginationService.class).get();
         PaginationList.Builder builder = pagServ.builder();

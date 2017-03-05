@@ -22,7 +22,7 @@ package io.github.zerthick.graveyards;
 import com.google.inject.Inject;
 import io.github.zerthick.graveyards.cmd.CommandRegister;
 import io.github.zerthick.graveyards.graveyard.Graveyard;
-import io.github.zerthick.graveyards.graveyard.GraveyardsManager;
+import io.github.zerthick.graveyards.graveyard.GraveyardGroupManager;
 import io.github.zerthick.graveyards.utils.config.ConfigManager;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -48,7 +48,7 @@ import java.util.UUID;
 
 @Plugin(id = "graveyards",
         name = "Graveyards",
-        version = "2.1.3",
+        version = "2.2.0",
         description = "A player spawn-point plugin.",
         authors = {
                 "Zerthick"
@@ -56,9 +56,9 @@ import java.util.UUID;
 )
 public class Graveyards {
 
-    private GraveyardsManager graveyardsManager;
+    public static final String DEFAULT_GRAVEYARD_GROUP = "default";
+    private GraveyardGroupManager graveyardsGroupManager;
     private Map<UUID, RespawnDataPacket> respawnDataPackets;
-
     @Inject
     private Game game;
     @Inject
@@ -89,8 +89,8 @@ public class Graveyards {
         return defaultConfigDir;
     }
 
-    public GraveyardsManager getGraveyardsManager() {
-        return graveyardsManager;
+    public GraveyardGroupManager getGraveyardGroupManager() {
+        return graveyardsGroupManager;
     }
 
     public Game getGame() {
@@ -101,6 +101,10 @@ public class Graveyards {
         return logger;
     }
 
+    public PluginContainer getInstance() {
+        return instance;
+    }
+
     @Listener
     public void onGameInit(GameInitializationEvent event) {
 
@@ -108,7 +112,7 @@ public class Graveyards {
         ConfigManager.regsisterSerializers();
 
         // Load graveyards from file
-        graveyardsManager = ConfigManager.loadGraveyards(this);
+        graveyardsGroupManager = ConfigManager.loadGraveyards(this);
 
         // Load config values from file
         ConfigManager.loadConfigValues(this);
@@ -122,7 +126,7 @@ public class Graveyards {
 
         // Register Commands
         CommandRegister commandRegister = new CommandRegister(
-                instance);
+                this);
         commandRegister.registerCmds();
 
         // Log Start Up to Console
@@ -136,7 +140,9 @@ public class Graveyards {
         Entity entity = event.getTargetEntity();
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            Optional<Graveyard> nearestGraveyardOptional = graveyardsManager.findNearestGraveyard(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId());
+            Optional<Graveyard> nearestGraveyardOptional = graveyardsGroupManager
+                    .findNearestGraveyardWithFilter(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId(),
+                            entry -> entry.getKey().equals(DEFAULT_GRAVEYARD_GROUP) || player.hasPermission("graveyards.respawn." + entry.getKey()));
             if (nearestGraveyardOptional.isPresent()) {
                 Graveyard nearestGraveyard = nearestGraveyardOptional.get();
                 respawnDataPackets.put(player.getUniqueId(), new RespawnDataPacket(nearestGraveyard.getMessage(), nearestGraveyard.getRotation(), nearestGraveyard.getLocation()));

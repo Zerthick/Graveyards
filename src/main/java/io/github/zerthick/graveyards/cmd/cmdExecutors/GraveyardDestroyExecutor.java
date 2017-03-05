@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -19,6 +19,8 @@
 
 package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
+import io.github.zerthick.graveyards.Graveyards;
+import io.github.zerthick.graveyards.graveyard.GraveyardGroup;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -43,27 +45,30 @@ public class GraveyardDestroyExecutor extends AbstractCmdExecutor implements Com
     public CommandResult execute(CommandSource src, CommandContext args)
             throws CommandException {
 
-        Optional<String> name = args.getOne(CommandArgs.NAME);
-        Optional<WorldProperties> world = args.getOne(CommandArgs.WORLD);
+        Optional<String> nameOptional = args.getOne(CommandArgs.NAME);
+        Optional<GraveyardGroup> graveyardGroupOptional = args.getOne(CommandArgs.GROUP);
+        Optional<WorldProperties> worldOptional = args.getOne(CommandArgs.WORLD);
 
-        if (name.isPresent()) {
-            if (world.isPresent()) {
+        if (nameOptional.isPresent()) {
 
-                if (manager.removeGraveyard(name.get(), world.get().getUniqueId()).isPresent()) {
-                    src.sendMessage(successMessageBuilder(name.get(), world.get()));
-                } else {
-                    src.sendMessage(failureMessageBuilder(name.get(), world.get()));
-                }
-
-                return CommandResult.success();
+            GraveyardGroup graveyardGroup = manager.getGraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP).get();
+            if (graveyardGroupOptional.isPresent()) {
+                graveyardGroup = graveyardGroupOptional.get();
             }
-            if (src instanceof Player) {
-                Player player = (Player) src;
 
-                if (manager.removeGraveyard(name.get(), player.getWorld().getUniqueId()).isPresent()) {
-                    src.sendMessage(successMessageBuilder(name.get(), player.getWorld().getProperties()));
+            WorldProperties world = null;
+            if (worldOptional.isPresent()) {
+                world = worldOptional.get();
+            } else if (src instanceof Player) {
+                world = ((Player) src).getWorld().getProperties();
+            }
+
+            if (world != null) {
+
+                if (graveyardGroup.removeGraveyard(nameOptional.get(), world.getUniqueId()).isPresent()) {
+                    src.sendMessage(successMessageBuilder(nameOptional.get(), world, graveyardGroup.getGroupName()));
                 } else {
-                    player.sendMessage(failureMessageBuilder(name.get(), player.getWorld().getProperties()));
+                    src.sendMessage(failureMessageBuilder(nameOptional.get(), world, graveyardGroup.getGroupName()));
                 }
 
                 return CommandResult.success();
@@ -75,18 +80,20 @@ public class GraveyardDestroyExecutor extends AbstractCmdExecutor implements Com
         return CommandResult.empty();
     }
 
-    private Text successMessageBuilder(String name, WorldProperties world) {
+    private Text successMessageBuilder(String name, WorldProperties world, String groupName) {
 
         return Text.of(TextColors.GREEN, "Destroyed Graveyard ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
-                TextColors.DARK_GREEN, world.getWorldName());
+                TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
+                " in Group ", TextColors.DARK_GREEN, groupName, TextColors.GREEN, ".");
     }
 
-    private Text failureMessageBuilder(String name, WorldProperties world) {
+    private Text failureMessageBuilder(String name, WorldProperties world, String groupName) {
 
         return Text.of(TextColors.GREEN, "There is no graveyard  ",
                 TextColors.DARK_GREEN, name, TextColors.GREEN, " in World ",
                 TextColors.DARK_GREEN, world.getWorldName(), TextColors.GREEN,
+                " in Group ", TextColors.DARK_GREEN, groupName, TextColors.GREEN,
                 "!");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -20,7 +20,7 @@
 package io.github.zerthick.graveyards.cmd.cmdExecutors;
 
 import io.github.zerthick.graveyards.Graveyards;
-import io.github.zerthick.graveyards.graveyard.GraveyardsManager;
+import io.github.zerthick.graveyards.graveyard.GraveyardGroupManager;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.plugin.PluginContainer;
 
@@ -28,13 +28,13 @@ public abstract class AbstractCmdExecutor implements CommandExecutor {
 
     protected PluginContainer container;
     protected Graveyards plugin;
-    protected GraveyardsManager manager;
+    protected GraveyardGroupManager manager;
 
     public AbstractCmdExecutor(PluginContainer pluginContainer) {
         super();
         container = pluginContainer;
         plugin = (container.getInstance().get() instanceof Graveyards ? (Graveyards) container.getInstance().get() : null);
-        manager = plugin.getGraveyardsManager();
+        manager = plugin.getGraveyardGroupManager();
     }
 
 }
