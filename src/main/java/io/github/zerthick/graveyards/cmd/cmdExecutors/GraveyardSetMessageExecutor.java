@@ -46,7 +46,7 @@ public class GraveyardSetMessageExecutor extends AbstractCmdExecutor {
             throws CommandException {
 
         Optional<String> nameOptional = args.getOne(CommandArgs.NAME);
-        Optional<GraveyardGroup> graveyardGroupOptional = args.getOne(CommandArgs.GROUP);
+        Optional<String> graveyardGroupOptional = args.getOne(CommandArgs.GROUP);
         Optional<WorldProperties> worldOptional = args.getOne(CommandArgs.WORLD);
         Optional<String> messageOptional = args.getOne(CommandArgs.MESSAGE);
 
@@ -54,7 +54,14 @@ public class GraveyardSetMessageExecutor extends AbstractCmdExecutor {
 
             GraveyardGroup graveyardGroup = manager.getGraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP).get();
             if (graveyardGroupOptional.isPresent()) {
-                graveyardGroup = graveyardGroupOptional.get();
+                Optional<GraveyardGroup> groupOptional = manager.getGraveyardGroup(graveyardGroupOptional.get().toLowerCase().replaceAll("\\s+", ""));
+                if (groupOptional.isPresent()) {
+                    graveyardGroup = groupOptional.get();
+                } else {
+                    src.sendMessage(Text.of(TextColors.GREEN, "The Group ", TextColors.DARK_GREEN, graveyardGroupOptional.get(),
+                            TextColors.GREEN, " does not exist!"));
+                    return CommandResult.success();
+                }
             }
 
             WorldProperties world = null;

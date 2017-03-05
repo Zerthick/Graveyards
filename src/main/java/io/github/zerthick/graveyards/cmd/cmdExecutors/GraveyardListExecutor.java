@@ -65,9 +65,7 @@ public class GraveyardListExecutor extends AbstractCmdExecutor implements Comman
             UUID finalWorldUUID = world.getUniqueId();
             graveyardGroups.forEach((name, group) -> {
                 List<Graveyard> graveyardList = group.getGraveyardList(finalWorldUUID);
-                if (!graveyardList.isEmpty()) {
-                    applicableGraveyards.put(name, graveyardList);
-                }
+                applicableGraveyards.put(name, graveyardList);
             });
 
             if (!applicableGraveyards.isEmpty()) {

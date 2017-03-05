@@ -48,7 +48,7 @@ public class GraveyardTeleportExecutor extends AbstractCmdExecutor implements Co
             throws CommandException {
 
         Optional<String> nameOptional = args.getOne(CommandArgs.NAME);
-        Optional<GraveyardGroup> graveyardGroupOptional = args.getOne(CommandArgs.GROUP);
+        Optional<String> graveyardGroupOptional = args.getOne(CommandArgs.GROUP);
         Optional<WorldProperties> worldOptional = args.getOne(CommandArgs.WORLD);
 
         if (src instanceof Player) {
@@ -57,7 +57,14 @@ public class GraveyardTeleportExecutor extends AbstractCmdExecutor implements Co
 
                 GraveyardGroup graveyardGroup = manager.getGraveyardGroup(Graveyards.DEFAULT_GRAVEYARD_GROUP).get();
                 if (graveyardGroupOptional.isPresent()) {
-                    graveyardGroup = graveyardGroupOptional.get();
+                    Optional<GraveyardGroup> groupOptional = manager.getGraveyardGroup(graveyardGroupOptional.get().toLowerCase().replaceAll("\\s+", ""));
+                    if (groupOptional.isPresent()) {
+                        graveyardGroup = groupOptional.get();
+                    } else {
+                        src.sendMessage(Text.of(TextColors.GREEN, "The Group ", TextColors.DARK_GREEN, graveyardGroupOptional.get(),
+                                TextColors.GREEN, " does not exist!"));
+                        return CommandResult.success();
+                    }
                 }
 
                 WorldProperties world = worldOptional.orElseGet(() -> player.getWorld().getProperties());

@@ -30,4 +30,5 @@ public class CommandArgs {
     public static final LiteralText DISTANCE = Text.of("Distance");
     public static final LiteralText MESSAGE = Text.of("Message");
     public static final LiteralText GROUP = Text.of("Group");
+    public static final LiteralText GROUP_NAME = Text.of("Group_Name");
 }
