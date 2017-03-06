@@ -44,7 +44,7 @@ public class CommandRegister {
         CommandSpec graveyardDestroyGroupCommand = CommandSpec
                 .builder()
                 .description(Text.of("Destroys a Graveyard Group with the provided name."))
-                .permission("graveyards.commands.destroy.group")
+                .permission("graveyards.commands.group.destroy")
                 .arguments(GenericArguments.string(CommandArgs.GROUP_NAME))
                 .executor(new GraveyardDestroyGroupExecutor(container))
                 .build();
@@ -53,7 +53,7 @@ public class CommandRegister {
         CommandSpec graveyardCreateGroupCommand = CommandSpec
                 .builder()
                 .description(Text.of("Creates a new Graveyard Group with the provided name."))
-                .permission("graveyards.commands.create.group")
+                .permission("graveyards.commands.group.create")
                 .arguments(GenericArguments.string(CommandArgs.GROUP_NAME))
                 .executor(new GraveyardCreateGroupExecutor(container))
                 .build();
