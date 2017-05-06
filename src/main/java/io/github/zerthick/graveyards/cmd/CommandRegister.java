@@ -58,7 +58,7 @@ public class CommandRegister {
                 .executor(new GraveyardCreateGroupExecutor(container))
                 .build();
 
-        // gy setRange <Name> [Group] [World] <Range>
+        // gy setRange <Name> <Group> [World] <Range>
         CommandSpec graveyardSetRangeCommand = CommandSpec
                 .builder()
                 .description(
@@ -67,7 +67,7 @@ public class CommandRegister {
                 .permission("graveyards.commands.set.range")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(CommandArgs.NAME)),
-                        GenericArguments.optional(GenericArguments.string(
+                        GenericArguments.onlyOne(GenericArguments.string(
                                 CommandArgs.GROUP)),
                         GenericArguments.optionalWeak(GenericArguments.world(
                                 CommandArgs.WORLD)),
@@ -75,7 +75,7 @@ public class CommandRegister {
                         ))
                 .executor(new GraveyardSetRangeExecutor(container)).build();
 
-        // gy setMessage <Name> [Group] [World] <Message>
+        // gy setMessage <Name> <Group> [World] <Message>
         CommandSpec graveyardSetMessageCommand = CommandSpec
                 .builder()
                 .description(
@@ -84,7 +84,7 @@ public class CommandRegister {
                 .permission("graveyards.commands.set.message")
                 .arguments(
                         GenericArguments.onlyOne(GenericArguments.string(CommandArgs.NAME)),
-                        GenericArguments.optional(GenericArguments.string(
+                        GenericArguments.onlyOne(GenericArguments.string(
                                 CommandArgs.GROUP)),
                         GenericArguments.optionalWeak(GenericArguments.world(
                                 CommandArgs.WORLD)),
