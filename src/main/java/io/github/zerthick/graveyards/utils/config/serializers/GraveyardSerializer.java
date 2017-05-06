@@ -54,8 +54,9 @@ public class GraveyardSerializer implements TypeSerializer<Graveyard> {
         Text message = TextSerializers.FORMATTING_CODE.deserialize(value.getNode("message").getString());
 
         int distance = value.getNode("discoverDistance").getInt();
+        int range = value.getNode("range").getInt(-1);
 
-        return new Graveyard(name, location, rotation, message, distance);
+        return new Graveyard(name, location, rotation, message, distance, range);
     }
 
     @Override
@@ -74,6 +75,7 @@ public class GraveyardSerializer implements TypeSerializer<Graveyard> {
         value.getNode("message").setValue(TypeToken.of(String.class), TextSerializers.FORMATTING_CODE.serialize(obj.getMessage()));
 
         value.getNode("discoverDistance").setValue(TypeToken.of(Integer.class), obj.getDiscoverDistance());
+        value.getNode("range").setValue(TypeToken.of(Integer.class), obj.getRange());
 
     }
 }

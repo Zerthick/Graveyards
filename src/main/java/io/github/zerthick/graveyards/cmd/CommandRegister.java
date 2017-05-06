@@ -58,6 +58,23 @@ public class CommandRegister {
                 .executor(new GraveyardCreateGroupExecutor(container))
                 .build();
 
+        // gy setRange <Name> [Group] [World] <Range>
+        CommandSpec graveyardSetRangeCommand = CommandSpec
+                .builder()
+                .description(
+                        Text.of("Sets the respawn range of the graveyard set to -1 to be infinite")
+                )
+                .permission("graveyards.commands.set.range")
+                .arguments(
+                        GenericArguments.onlyOne(GenericArguments.string(CommandArgs.NAME)),
+                        GenericArguments.optional(GenericArguments.string(
+                                CommandArgs.GROUP)),
+                        GenericArguments.optionalWeak(GenericArguments.world(
+                                CommandArgs.WORLD)),
+                        GenericArguments.onlyOne(GenericArguments.integer(CommandArgs.RANGE)
+                        ))
+                .executor(new GraveyardSetRangeExecutor(container)).build();
+
         // gy setMessage <Name> [Group] [World] <Message>
         CommandSpec graveyardSetMessageCommand = CommandSpec
                 .builder()
@@ -66,9 +83,8 @@ public class CommandRegister {
                 )
                 .permission("graveyards.commands.set.message")
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of(CommandArgs.NAME))),
-                        GenericArguments.optionalWeak(GenericArguments.string(
+                        GenericArguments.onlyOne(GenericArguments.string(CommandArgs.NAME)),
+                        GenericArguments.optional(GenericArguments.string(
                                 CommandArgs.GROUP)),
                         GenericArguments.optionalWeak(GenericArguments.world(
                                 CommandArgs.WORLD)),
@@ -84,8 +100,7 @@ public class CommandRegister {
                         Text.of("Teleports you to the graveyard with the given name at the provided world or your current world if none is provided."))
                 .permission("graveyards.commands.teleport")
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of(CommandArgs.NAME))),
+                        GenericArguments.onlyOne(GenericArguments.string(CommandArgs.NAME)),
                         GenericArguments.optional(GenericArguments.string(
                                 CommandArgs.GROUP)),
                         GenericArguments.optionalWeak(GenericArguments.world(
@@ -114,8 +129,7 @@ public class CommandRegister {
                         Text.of(" Creates a graveyard with the given name at the provided world, location and orientaiton, or your current world, location, and orientation if none are provided."))
                 .permission("graveyards.commands.create")
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of(CommandArgs.NAME))),
+                        GenericArguments.onlyOne(GenericArguments.string(CommandArgs.NAME)),
                         GenericArguments.optional(GenericArguments.string(
                                 CommandArgs.GROUP)),
                         GenericArguments.optionalWeak(GenericArguments.world(
@@ -132,8 +146,7 @@ public class CommandRegister {
                         Text.of("Destroys a graveyard with the given name in the provided world or your current world if none is provided."))
                 .permission("graveyards.commands.destroy")
                 .arguments(
-                        GenericArguments.onlyOne(GenericArguments.string(Text
-                                .of(CommandArgs.NAME))),
+                        GenericArguments.onlyOne(GenericArguments.string(CommandArgs.NAME)),
                         GenericArguments.optional(GenericArguments.string(
                                 CommandArgs.GROUP)),
                         GenericArguments.optionalWeak(GenericArguments.world(
@@ -162,6 +175,7 @@ public class CommandRegister {
                 .child(graveyardCreateCommand, "create", "add", "mk")
                 .child(graveyardDestroyCommand, "destroy", "remove", "rm")
                 .child(graveyardListCommand, "list", "ls")
+                .child(graveyardSetRangeCommand, "setRange", "sr")
                 .child(graveyardSetMessageCommand, "setMessage", "sm")
                 .child(graveyardCreateGroupCommand, "creategroup", "addgroup", "mkgr")
                 .child(graveyardDestroyGroupCommand, "destroygroup", "removegroup", "rmgr")

@@ -31,4 +31,5 @@ public class CommandArgs {
     public static final LiteralText MESSAGE = Text.of("Message");
     public static final LiteralText GROUP = Text.of("Group");
     public static final LiteralText GROUP_NAME = Text.of("Group_Name");
+    public static final LiteralText RANGE = Text.of("Range");
 }

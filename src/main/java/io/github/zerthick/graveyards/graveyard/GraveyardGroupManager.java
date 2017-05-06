@@ -111,6 +111,18 @@ public class GraveyardGroupManager {
     }
 
     /**
+     * Helper method to find the nearest graveyard. Uses brute-force
+     * method for finding nearest neighbor.
+     *
+     * @param location  the query Location
+     * @param worldUUID the query World
+     * @return the nearest Graveyard
+     */
+    public Optional<Graveyard> findNearestGraveyardInRange(Vector3i location, UUID worldUUID) {
+        return findNearestGraveyardInRangeWithFilter(location, worldUUID, e -> true);
+    }
+
+    /**
      * Helper method to find the nearest graveyard. Only considers graveyard groups that pass through the provided
      * filter. Uses brute-force method for finding nearest neighbor.
      *
@@ -123,6 +135,28 @@ public class GraveyardGroupManager {
 
         List<Graveyard> candidates = getGraveyardGroupMap().entrySet().stream().filter(filter)
                 .map(g -> g.getValue().findNearestGraveyard(location, worldUUID))
+                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+
+        if (!candidates.isEmpty()) {
+            return candidates.stream().min(Comparator.comparingInt(g -> location.distanceSquared(g.getLocation())));
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Helper method to find the nearest graveyard in range. Only considers graveyard groups that pass through the provided
+     * filter. Uses brute-force method for finding nearest neighbor.
+     *
+     * @param location
+     * @param worldUUID
+     * @param filter
+     * @return
+     */
+    public Optional<Graveyard> findNearestGraveyardInRangeWithFilter(Vector3i location, UUID worldUUID, Predicate<Map.Entry<String, GraveyardGroup>> filter) {
+
+        List<Graveyard> candidates = getGraveyardGroupMap().entrySet().stream().filter(filter)
+                .map(g -> g.getValue().findNearestGraveyardInRange(location, worldUUID))
                 .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 
         if (!candidates.isEmpty()) {

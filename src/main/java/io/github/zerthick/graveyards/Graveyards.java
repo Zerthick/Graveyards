@@ -48,7 +48,7 @@ import java.util.UUID;
 
 @Plugin(id = "graveyards",
         name = "Graveyards",
-        version = "2.2.0",
+        version = "2.3.0",
         description = "A player spawn-point plugin.",
         authors = {
                 "Zerthick"
@@ -141,7 +141,7 @@ public class Graveyards {
         if (entity instanceof Player) {
             Player player = (Player) entity;
             Optional<Graveyard> nearestGraveyardOptional = graveyardsGroupManager
-                    .findNearestGraveyardWithFilter(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId(),
+                    .findNearestGraveyardInRangeWithFilter(player.getLocation().getBlockPosition(), player.getWorld().getUniqueId(),
                             entry -> entry.getKey().equals(DEFAULT_GRAVEYARD_GROUP) || player.hasPermission("graveyards.respawn." + entry.getKey()));
             if (nearestGraveyardOptional.isPresent()) {
                 Graveyard nearestGraveyard = nearestGraveyardOptional.get();

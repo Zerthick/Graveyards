@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Zerthick
+ * Copyright (C) 2017  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -33,6 +33,7 @@ public class Graveyard {
     private final Vector3d rotation;
     private Text message;
     private int discoverDistance;
+    private int range;
 
     /**
      * Creates a new Graveyard
@@ -42,13 +43,15 @@ public class Graveyard {
      * @param rotation the rotation to Spawn the Player
      * @param message the message to send the Player when spawning
      * @param discoverDistance the minimum distance the player must be in order to discover the graveyard
+     * @param range the maximum range at which the player will spawn in the graveyard
      */
-    public Graveyard(String name, Vector3i location, Vector3d rotation, Text message, int discoverDistance) {
+    public Graveyard(String name, Vector3i location, Vector3d rotation, Text message, int discoverDistance, int range) {
         this.name = name;
         this.location = location;
         this.rotation = rotation;
         this.message = message;
         this.discoverDistance = discoverDistance;
+        this.range = range;
     }
 
     public String getName() {
@@ -77,5 +80,17 @@ public class Graveyard {
 
     public void setDiscoverDistance(int discoverDistance) {
         this.discoverDistance = discoverDistance;
+    }
+
+    public int getRange() {
+        return range;
+    }
+
+    public void setRange(int range) {
+        this.range = range;
+    }
+
+    public boolean isInRangeDistanceSquared(int distanceSquared) {
+        return (range == -1) || (distanceSquared < (range * range));
     }
 }

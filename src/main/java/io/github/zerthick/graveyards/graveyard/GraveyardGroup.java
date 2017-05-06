@@ -75,7 +75,7 @@ public class GraveyardGroup {
      * @param worldUUID the UUID of the Graveyard World
      */
     public void addGraveyard(String name, Vector3i location, Vector3d rotation, UUID worldUUID) {
-        Graveyard graveyardToAdd = new Graveyard(name, location, rotation, ConfigValues.getInstance().getDefaultGraveyardMessage(name), 0);
+        Graveyard graveyardToAdd = new Graveyard(name, location, rotation, ConfigValues.getInstance().getDefaultGraveyardMessage(name), 0, -1);
         Map<String, Graveyard> graveyardWorldMap = graveyardMap.getOrDefault(worldUUID, new HashMap<>());
         graveyardWorldMap.put(name.toLowerCase(), graveyardToAdd);
         graveyardMap.put(worldUUID, graveyardWorldMap);
@@ -126,6 +126,20 @@ public class GraveyardGroup {
     public Optional<Graveyard> findNearestGraveyard(Vector3i location, UUID worldUUID) {
 
         return getGraveyardList(worldUUID).stream()
+                .min(Comparator.comparingInt(g -> location.distanceSquared(g.getLocation())));
+    }
+
+    /**
+     * Helper method to find the nearest graveyard in range. Uses brute-force
+     * method for finding nearest neighbor.
+     *
+     * @param location  the query Location
+     * @param worldUUID the query World
+     * @return the nearest Graveyard
+     */
+    public Optional<Graveyard> findNearestGraveyardInRange(Vector3i location, UUID worldUUID) {
+
+        return getGraveyardList(worldUUID).stream().filter(g -> g.isInRangeDistanceSquared(location.distanceSquared(g.getLocation())))
                 .min(Comparator.comparingInt(g -> location.distanceSquared(g.getLocation())));
     }
 
