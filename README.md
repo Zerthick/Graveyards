@@ -27,3 +27,6 @@ Graveyards is a simple spawnpoint defining plugin. When players die, they respaw
 
 ## Graveyard Groups
 As of Graveyards v2.2.0, Graveyards are now contained within Graveyard Groups, there is a default group which always exists and you can create new groups with the `creategroup` command. Graveyards can be assigned a group when first created in the `create` command. All players have acess to the graveyards in the default group. In order for a player to be able to respawn in a graveyard outside the default group, they must have the permision `graveyards.respawn.<group_name>` where `<group_name>` is the name of the group in **all lowercase!**
+
+## Support Me
+I will **never** charge money for the use of my plugins, however they do require a significant amount of work to maintain and update. If you'd like to show your support and buy me a cup of tea sometime (I don't drink that horrid coffee stuff :P) you can do so [here](https://www.paypal.me/zerthick)
