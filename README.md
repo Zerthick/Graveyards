@@ -10,7 +10,7 @@ Graveyards is a simple spawnpoint defining plugin. When players die, they respaw
 `/gy list [world]` - Lists all graveyards in the provided world or your current world if none is provided. (Aliases: ls, list)  
 `/gy nearest [group] [world] [x, y, z]` - Identifies the nearest graveyard in the given group, or all groups if none is provided, from the provided world and location or your current world and location if neither is provided. (Aliases: fd, nearest, closest)  
 `/gy teleport <name> [group] [world]` - Teleports you to the graveyard with the given name in the given group, or the default group if none is provided, at the provided world or your current world if none is provided. (Aliases: tp, teleport)  
-`/gy setMessage <name> <group> [world] <message>` - Sets the welcome message of the graveyard with he given name in the given group at the provided world or your current world if none is provided. (Aliases: sm, setMessage) 
+`/gy setMessage <name> <group> [world] <message>` - Sets the welcome message of the graveyard with he given name in the given group at the provided world or your current world if none is provided. (Aliases: sm, setMessage)   
 `/gy setRange <name> <group> [world] <range>` - Sets the respawn range of the graveyard with he given name in the given group at the provided world or your current world if none is provided (set to -1 for infinte range). (Aliases: sr, setRange) 
 
 ## Permissions
