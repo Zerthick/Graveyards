@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Zerthick
+ * Copyright (C) 2018  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -24,6 +24,7 @@ plugins {
 }
 
 group 'io.github.zerthick'
+version '2.4.0'
 
 repositories {
     mavenCentral()
@@ -36,12 +37,10 @@ repositories {
 spongestart{
     eula true
 
-    minecraft '1.11.2'
-    type 'bleeding'
-    spongeForgeVersion '1.11.2-2282-6.0.0-BETA-2297'
-
+    minecraft '1.12.2'
+    type 'stable'
 }
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:6.0.0'
+    compile 'org.spongepowered:spongeapi:7.0.0'
 }

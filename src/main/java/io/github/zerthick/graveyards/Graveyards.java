@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Zerthick
+ * Copyright (C) 2018  Zerthick
  *
  * This file is part of Graveyards.
  *
@@ -48,7 +48,6 @@ import java.util.UUID;
 
 @Plugin(id = "graveyards",
         name = "Graveyards",
-        version = "2.3.0",
         description = "A player spawn-point plugin.",
         authors = {
                 "Zerthick"
